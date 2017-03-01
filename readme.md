@@ -1,602 +1,452 @@
-#Session 5
+#Session 6 - placeholder
 
-Note: the refresh issue experienced in class was due to a restrictive route in app.js.
+###Search / Sort Filter
 
-Comment out the existing path and replace it with:
+Add a search input field to the top of `recipe-list.template.html`. Note the use of [ng-model](https://docs.angularjs.org/api/ng/directive/ngModel):
 
 ```
-// app.get('/', (req, res) => {
-// 	res.sendFile(__dirname + '/index.html')
-// })
-
-app.get('*', (req, res) => {
-	res.sendFile(__dirname + '/public/index.html')
-})
+<p>
+  Search: <input ng-model="$ctrl.query" />
+</p>
 ```
 
-This has been corrected in the 'done' branch of this repo.
+Add a filter to the ng-repeat directive:
 
-##Homework
+`<li ng-repeat="recipe in $ctrl.recipes | filter:$ctrl.query">`
 
-Review the creation of components below. 
+Data-binding is one of the core features in Angular. When the page loads, Angular binds the value of the input box to the data model variable specified with ngModel and keeps the two in sync.
 
-1. Add an Angular route for the reviews section of the page.
-1. Create a component for the review page along with a 
-1. template that displays 4 or 5 one sentence summary reviews (restaurant images are provided in the img directory if you would like to use them)
-1. Bonus - make a nice 404 page for the other items on the main nav
+The data that a user types into the input box (bound to $ctrl.query) is immediately available as a filter input in the list repeater (`recipe in $ctrl.recipes | filter:$ctrl.query`). When changes to the data model cause the repeater's input to change, the repeater updates the DOM to reflect the current state of the model.
 
-Good luck.
+The [filter](https://docs.angularjs.org/api/ng/filter/filter) function uses the `$ctrl.query` value to create a new array that contains only those records that match the query.
 
-##Components
+###Two Way Data Binding
 
-Set up a simple html page bootstrapped with Angular (code.angularjs.org):
-
-```html
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>AngularJS Module</title>
-    <script src="https://code.angularjs.org/1.6.2/angular.js"></script>
-    <script src="test.js"></script>
-</head>
-
-<body>
-    <div ng-app="myApp">
-        <div ng-controller="GreetUserController">
-            <p>Hello {{ user }}</p>
-        </div>
-    </div>
-</body>
-</html>
-```
-
-test.js:
-
-```js
-angular.module('myApp', []);
-
-angular.module('myApp').controller('GreetUserController', function( $scope ){
-    $scope.user = 'John'
-})
-```
-
-refactored:
-
-```js
-var myApp = angular.module('myApp', []);
-
-myApp.controller('GreetUserController', $scope  =>  $scope.user = 'John' )
-```
-
-###Create a component
-
-(Comment out the controller.) Components are referenced directly in the html via custom tags:
-
-```html
-<div ng-app="myApp">
-  <greet-user></greet-user>
-</div>
-```
-
-A component references an object that contains both a template and a controller. 
-
-Note the use of $ctrl for components as opposed to global $scope. Here the data is exclusive to a specific controller. Also, the html uses hyphens while the component uses camel case.
-
-```js
-var myApp = angular.module('myApp', []);
-
-myApp.component('greetUser', {
-    template: 'Hello, {{ $ctrl.user }}!',
-    controller: function GreetUserController() {
-        this.user = 'world';
-    }
-});
-```
-
-Test in browser.
-
-###Create multiple components:
-
-Add a second component: 
-
-```js
-myApp.component('greetUser', {
-    template: 'Hello, {{ $ctrl.user }}!',
-    controller: function GreetUserController() {
-        this.user = 'world';
-    }
-});
-
-
-myApp.component('byeUser', {
-    template: 'Bye, {{$ctrl.user}}!',
-    controller: function ByeUserController() {
-        this.user = 'cruel world';
-    }
-});
-```
-
-```html
-<body>
-    <div ng-app="myApp">
-        <greet-user></greet-user>
-        <bye-user></bye-user>
-    </div>
-</body>
-```
-
-
-###Add routing
-
-(Comment out the previous components.) If we want to swap out components we use Angular for routing a SPA, not express routing. 
-
-Use express routes for handling data and authentication. (Always include a single route for index.html.) 
-
-e.g. something like this would be a bad idea:
-
-```js
-app.get('/recipes', (req, res) => {
-    res.sendFile(__dirname + '/public/recipes.html')
-})
-```
-
-Routing in a spa is best done using the hash structure (no page refresh).
-
-Angular routes handle the view (templates) and the logic (controllers) for the views.
-
-`<script src="https://code.angularjs.org/1.6.2/angular-route.js"></script>`
-
-```js
-var myApp = angular.module('myApp', ['ngRoute']);
-```
-
-```js
-myApp.config(
-    function config($routeProvider) {
-        $routeProvider.
-        when('/', {
-            template: 'Hello, {{user}}!',
-            controller: 'GreetUserController'
-        }).
-        when('/bye', {
-            template: 'Bye, {{user}}!',
-            controller: 'ByeUserController'
-        }).
-        otherwise('/404');
-    });
-
-myApp.controller('GreetUserController', function($scope){
-    $scope.user = 'world';
-})
-
-myApp.controller('ByeUserController', function($scope){
-    $scope.user = 'cruel world';
-})
-```
-
-Because we are not using components we are back to using $scope.
-
-ng-view
-
-```html
-<div ng-app="myApp">
-    <div ng-view></div>
-</div>
-```
-
-Note the url string now includes the hash and a bang ('!'). 
-
-Go to `http://localhost:3000/#!/bye`
-
-###Add Components
-
-(Comment out the previous controllers. Uncomment the old components.) The routing specifies a template defined by a component.
-
-Hash prefixes and be set using $locationProvider (defaults to !).
-
-```js
-var myApp = angular.module('myApp', ['ngRoute']);
-
-myApp.config(
-    function config($locationProvider, $routeProvider) {
-        $locationProvider.hashPrefix('!');
-        $routeProvider.
-        when('/', {
-            template: '<greet-user></greet-user>'
-        }).
-        when('/bye', {
-            template: '<bye-user></bye-user>'
-        }).
-        otherwise('/404');
-    });
-
-myApp.component('greetUser', {
-    template: 'Hello, {{$ctrl.user}}!',
-    controller: function GreetUserController() {
-        this.user = 'world';
-    }
-});
-
-myApp.component('byeUser', {
-    template: 'Bye, {{$ctrl.user}}!',
-    controller: function ByeUserController() {
-        this.user = 'cruel world';
-    }
-});
-```
-
-###Linking
-
-```js
-myApp.component('greetUser', {
-    template: `
-    <h4>Hello, {{ $ctrl.user }}!</h4>
-    <p><a href="#!/bye">Bye</a></p>
-    `,
-    controller: function GreetUserController() {
-        this.user = 'world';
-    }
-});
-```
-html5 mode is an alternative to hashbang mode. See [this discussion](http://stackoverflow.com/questions/16677528/location-switching-between-html5-and-hashbang-mode-link-rewriting#16678065) on stack overflow.
-
-In the config:
-
-Comment out `// $locationProvider.hashPrefix('!')`
-
-`$locationProvider.html5Mode(true);`
-
-In index.html:
-
-`<base href="/">`
-
-Note the cleaner urls.
-
-
-##Recipe Site
-
-Examine package.json, app.js, index.html and scripts.js
-
-`sudo npm install`
-
-`npm run boom!`
-
-Allow express to use public as a source for static files and our Angular work:
-
-`app.use(express.static('public'))`
-
-`<script src="https://code.angularjs.org/1.5.8/angular.js"></script>`
-
-`<body ng-app="foodApp">`
-
-Create `foodapp.module.js`
-
-`var app = angular.module('foodApp', []);`
-
-and link it: `<script src="js/foodapp.module.js"></script>`
-
-Create recipes folder in js.
-
-Create `recipe-list.component.js` and link it.
-
-```js
-angular.module('foodApp').component('recipeList', {
-    template: `<h1>test</h1>`,
-    controller: function RecipeListController() {
-
-    }
-});
-```
-
-```html
-<div>
-  <recipe-list></recipe-list>
-</div>
-```
-
-Debug!
-
-Add a template and data to the controller:
-
-```js
-angular.module('foodApp').component('recipeList', {
-  template:
-  `
-  <div>
-  <ul>
-      <li ng-repeat="recipe in $ctrl.recipes">
-          <img ng-src="img/home/{{ recipe.image }}">
-          <h1><a href="#0">{{ recipe.title }}</a></h1>
-          <p>{{ recipe.description }}</p>
-      </li>
-  </ul>
-  </div>
-  `,
-
-  controller: function RecipeListController( ) {
-    this.recipes = [
-    {
-      name: 'recipe1309',
-      title: 'Lasagna',
-      date: '2013-09-01',
-      description: 'Lasagna noodles piled high and layered full of three kinds of cheese to go along with the perfect blend of meaty and zesty, tomato pasta sauce all loaded with herbs.',
-      image: 'lasagne.png'
-    },
-    {
-      name: 'recipe1404',
-      title: 'Pho-Chicken Noodle Soup',
-      date: '2014-04-15',
-      description: 'Pho (pronounced “fuh”) is the most popular food in Vietnam, often eaten for breakfast, lunch and dinner. It is made from a special broth that simmers for several hours infused with exotic spices and served over rice noodles with fresh herbs.',
-      image: 'pho.png'
-    },
-    {
-      name: 'recipe1210',
-      title: 'Guacamole',
-      date: '2012-10-01',
-      description: 'Guacamole is definitely a staple of Mexican cuisine. Even though Guacamole is pretty simple, it can be tough to get the perfect flavor – with this authentic Mexican guacamole recipe, though, you will be an expert in no time.',
-      image: 'guacamole.png'
-    },
-    {
-      name: 'recipe1810',
-      title: 'Hamburger',
-      date: '2012-10-20',
-      description: 'A Hamburger (or often called as burger) is a type of food in the form of a rounded bread sliced in half and its Center is filled with patty which is usually taken from the meat, then the vegetables be lettuce, tomatoes and onions.',
-      image: 'hamburger.png'
-    }
-    ];
-  }
-});
-```
-
-Break down the template into a separate file:
-
-js > recipes > recipe-list.template.html
-
-`templateUrl: 'js/recipes/recipe-list.template.html',`
-
-###Format the recipes
-
-```html
-<div class="wrap">
-    <ul>
-        <li ng-repeat="recipe in $ctrl.recipes">
-            <img ng-src="img/home/{{ recipe.image }}">
-            <div>
-            <h1><a href="#0">{{ recipe.title }}</a></h1>
-            <p>{{ recipe.description }}</p>
-            </div>
-        </li>
-    </ul>
-</div>
-```
-
-styles.scss:
+Add a `<select>` element bound to `$ctrl.orderProp` to the top paragraph, so that our users can pick from the two provided sorting options.
 
 ```
-@import 'imports/recipe-list'; 
+  Sort by:
+  <select ng-model="$ctrl.orderProp">
+    <option value="title">Alphabetical</option>
+    <option value="date">Newest</option>
+  </select>
 ```
+Note the values - these are from the json.
 
-recipes.scss
+Chained the filter filter with the orderBy filter to further process the input for the repeater. 
 
-```css
-.wrap {
-    background: #eee;
-    max-width: 940px;
-    margin: 0 auto;
-    ul {
-        list-style: none;
-        padding: 0;
-    }
-    li {
-        display: flex;
-        padding: 1rem;
-        img {
-            width: 30%;
-            height:100%;
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            margin-right: 1rem;
-        }
-        h1 {
-            font-family: lobster;
-            a {
-                color: #666;
-                text-decoration: none;
-            }
-        }
-    }
-}
-```
-
-###Routing
-
-Wire up the main nav. In the html:
-
-`<script src="https://code.angularjs.org/1.6.2/angular-route.js"></script>`
-
-`<script src="js/foodapp.config.js"></script>`
-
-`<base href="/">`
-
-In the module:
-
-`angular.module('foodApp', ['ngRoute']);`
-
-foodapp.config.js:
-
-```js
-angular.module('foodApp').config(
-
-  function config($locationProvider, $routeProvider) {
-    $routeProvider.
-    when('/', {
-      template: 'test'
-    }).
-    when('/recipes', {
-      template: 'test2'
-    }).
-    otherwise('/404');
-
-    $locationProvider.html5Mode(true);
-  });
-  ```
-
-```html
-<div>
-  <div ng-view></div>
-</div>
-```
-
-```html
-<div class="panel panel1">
-    <a href="/">Home</a>
-</div>
-<div class="panel panel2 active">
-    <a href="/recipes">Recipes</a>
-</div>
-```
-
-```js
-angular.module('foodApp').config(
-
-  function config($locationProvider, $routeProvider) {
-    $routeProvider.
-    when('/', {
-      template: 'test'
-    }).
-    when('/recipes', {
-      template: '<recipe-list></recipe-list>'
-    }).
-    otherwise('/404');
-
-    $locationProvider.html5Mode(true);
-  });
-```
-
-###Filtering and Sorting (optional)
-
-```html
-<ul>
-    <li>
-        <p>
-            Search: <input ng-model="$ctrl.query" />
-        </p>
-        <p>
-            Sort by:
-            <select ng-model="$ctrl.orderProp">
-                <option value="title">Alphabetical</option>
-                <option value="date">Newest</option>
-            </select>
-        </p>
-    </li>
-</ul>
-```
+[`orderBy`](https://docs.angularjs.org/api/ng/filter/orderBy) is a filter that takes an input array, copies it and reorders the copy which is then returned.
 
 `<li ng-repeat="recipe in $ctrl.recipes | filter:$ctrl.query | orderBy:$ctrl.orderProp">`
+
+Add a line to the controller in `recipe-list.component.js` after the recipes array that sets the default value of orderProp to age. If we had not set a default value here, the orderBy filter would remain uninitialized until the user picked an option from the drop-down menu.
 
 `this.orderProp = 'date';`
 
 
-###Notes
 
+###Fetching the Data
+
+Let's use `recipes.json` in the data folder instead of keeping the data model in the controller. 
+
+We fetch the dataset from our server using one of Angular's built-in services called [$http](https://docs.angularjs.org/api/ng/service/$http). We will use Angular's [dependency injection (DI)](https://docs.angularjs.org/guide/di) to provide the service to the recipeList component's controller.
+
+$http
+* a core Angular service that facilitates communication with the remote HTTP servers
+* core = built into Angular
+* need to make it available to our controller via [dependency injection](https://docs.angularjs.org/guide/di).
+
+In `recipe-list.component.js` make $http available to the controller:
+
+`controller: function RecipeListController($http) { `
+
+Create var `self` - since we are making the assignment of the recipes property in a callback function (`.then(function (response) {}`), where the `this` value is not defined, we introduce a local variable called self that points back to the RecipeListController.
+
+```js
+controller: function RecipeListController($http) {
+    var self = this;
+```
+
+Change the orderProp statement to refer to self:
+
+```js
+self.orderProp = 'date';
+```
+
+Use `get` method of `$http` to fetch the json from the data folder:
+
+```js
+$http.get('data/recipes.json').then(function (response) {
+    self.recipes = response.data;
+});
+```
+
+* `then` is a promise which runs the following function when the data is received (the `response`):
+* since we want the `response.data` to belong to the RecipeListController function we assign it to `self.recipes`.
+
+We should see no change to the view but the data is now being accessed via http from the data folder.
+
+Here is the complete component:
+
+```js
+angular.module('recipeApp').component('recipeList', {
+    templateUrl: 'recipe-list/recipe-list.template.html',
+
+    controller: function RecipeListController($http) {
+        var self = this;
+        self.orderProp = 'date';
+
+        $http.get('data/recipes.json').then(function (response) {
+            self.recipes = response.data;
+        });
+    }
+});
+```
+###Promises
+
+```js
+<script>
+console.log('fetching data from beers - like $.getJSON or $.ajax')
+const posts = fetch('https://api.punkapi.com/v2/beers/'); 
+console.log(posts)
+</script>
+```
+Returns a promise
+
+```js
+const postsPromise = fetch('https://api.punkapi.com/v2/beers/'); 
+postsPromise.then(data => {
+  console.log(data)
+})
+```
+
+Returns a readable stream
+
+```
+const postsPromise = fetch('https://api.punkapi.com/v2/beers/'); 
+
+postsPromise
+  .then(data => data.json())
+  .then(data => { console.log(data) })
+```
+
+.then fires when there is a successful result. Listen for errors using .catch
+
+```
+const postsPromise = fetch('https://api.punkapi.com/v2/beers/'); 
+
+postsPromise
+  .then(data => data.json())
+  .then(data => { console.log(data) })
+  .catch((err) => {
+    console.error(err);
+  })
+```
+(Create an error by mangling the fetch URI.)
+
+#####Custom Promises
+
+See 2-custom-promise.html
+
+#####Chaining (waterfall) Promises
+
+See 3-chaining-promises.html
+
+#####Multiple Promises
+
+4-multiple-promises.html
+
+
+###Adding Routing to Display Individual Recipes
+
+To add the detailed view, we are going to turn index.html into a "layout template" - a template that is common to all views in our application. Other "partial templates" are then included into this layout template depending on the "route" — the view that is currently displayed to the user.
+
+Note the addition of recipe1309.json to the data directory. 
+
+Use the `recipe.name` expression in the html template:
+
+`<h1><a href="#!recipes/{{ recipe.name }} ">{{ recipe.title }}</a></h1>`
+
+Note we are hard coding `#!recipes/` and accessing recipe.name from the json. Also, the hash bang. Now, clicking on the individual recipe shows a new address in the browser's location bar. (Resist the temptation to use the navbar on the top of the document for now. It is not part of the angular application.)
+
+Add ngRoute to index.html after the main angular load:
+
+`<script src="https://code.angularjs.org/1.5.8/angular-route.js"></script>`
+
+A module's .config() method gives us access to the available providers for configuration. To make the providers, services and directives defined in ngRoute available to our application, we need to add ngRoute as a dependency to our recipeApp module.
+
+Add `ngRoute` as a dependency for our app-module.js:
+
+```
+angular.module('recipeApp', [
+    'ngRoute',
+    'recipeList'
+]);
+```
+
+Application routes in Angular are declared via $routeProvider, which is the provider of the $route service. This service makes it easy to wire together controllers, view templates, and the current URL location in the browser. 
+
+We can configure the $route service (using it's provider) for our application. In order to be able to quickly locate the configuration code, we put it into a separate file and used the .config suffix.
+
+Create an app.config file in the app folder:
+```js
+angular.module('recipeApp').
+    config(['$locationProvider', '$routeProvider',
+        function config($locationProvider, $routeProvider) {
+            $locationProvider.hashPrefix('!');
+            $routeProvider.
+                when('/', {
+                    template: '<recipe-list></recipe-list>'
+                }).
+                when('/recipes/:recipeId', {
+                    template: '<recipe-detail></recipe-detail>'
+                }).
+                otherwise('/recipes');
+        }
+    ]);
+```
+
+Alt version without min protection:
+
+```js
+angular.module('recipeApp').config(
+    function config($locationProvider, $routeProvider) {
+        $locationProvider.hashPrefix('!');
+        $routeProvider.
+        when('/', {
+            template: '<recipe-list></recipe-list>'
+        }).
+        when('/recipes/:recipeId', {
+            template: '<recipe-detail></recipe-detail>'
+        }).
+        otherwise('/recipes');
+    });
+```
+
+* `otherwise` - defines a fallback route to redirect to, when no route definition matches the current URL
+* `:recipeId` - the $route service uses the route declaration — '/phones/:recipeId' — as a template that is matched against the current URL. All variables defined with the : prefix are extracted into the (injectable) $routeParams object.
+
+Add a link to `app.config.js` to index.html (after the app.module.js):
+
+`<script src="app.config.js"></script>`
+
+We optionally used $locationProvider.hashPrefix() to set the hash-prefix (`#`) to !. This prefix will appear in the links to our client-side routes, right after the hash (`#`) symbol and before the actual path (e.g. index.html#!/some/path).
+
+Setting a prefix is not necessary, but it is considered a good practice. ! is the most commonly used prefix. The recipe-template included the `!`:
+
+```html
+<h1><a href="#!recipes/{{ recipe.name }} ">{{ recipe.title }}</a></h1>
+```
+
+Edit index.html from:
+
+```html
+<article ng-app="recipeApp">
+    <recipe-list></recipe-list>
+</article>
+```
+
+To:
+
+```html
+<article ng-app="recipeApp">
+    <div ng-view></div>
+</article>
+```
+
+Routing is usually used in conjunction with ngView - a directive that complements the $route service by including the rendered template of the current route into the main layout. The ngView directive includes the view template for the current route into the layout template. 
+
+Here we see nothing when we click on a recipe. That is because there is no defined view associated with the detail route.
+
+The config file makes provision for a recipe-detail template. We will create that now.
+
+
+
+
+###Creating the Recipe Details Component
+
+Create a `recipe-detail` directory in the app folder.
+
+Create stubs for recipe details in the new `recipe-detail` directory:
+
+`recipe-detail/recipe-detail.module.js`:
+
+```
+angular.module('recipeDetail', [
+    'ngRoute'
+]);
+```
+
+We inject ngRoute into the recipeDetail module since we will be needing it.
+
+We can then inject the routeParams service of ngRoute into our controller so that we can extract the recipeId.
+
+`recipe-detail.component.js`
+
+```
+angular.module('recipeDetail').
+    component('recipeDetail', {
+        template: '<p>Detail view for <span>{{$ctrl.recipeId}}</span></p>',
+        controller: ['$routeParams',
+            function RecipeDetailController($routeParams) {
+                this.recipeId = $routeParams.recipeId;
+            }
+        ]
+    });
+```
+
+Add `recipeDetail` as a dependency to our application in `app.module.js`:
+
+```
+angular.module('recipeApp', [
+    'ngRoute',
+    'recipeDetail',
+    'recipeList'
+]);
+```
+
+Link to recipe-detail files:
+
+```
+<head>
+    ...
+    <script src="recipe-detail/recipe-detail.module.js"></script>
+    <script src="recipe-detail/recipe-detail.component.js"></script>
+    ...
+</head>
+```
+
+Clicking on the recipe links in the main view should take you to our stub template. Note: because of the order we used to create this module you may need to restart gulp.
+
+
+
+###Adding JSON and the Detail Template
+
+Review `data/recipe1309.json`:
+
+```js
+{
+  "name": "recipe1309", 
+  "title": "Lasagna", 
+  "date": "2013-09-01", 
+  "description": "Lasagna noodles piled high and layered full of three kinds of cheese to go along with the perfect blend of meaty and zesty, tomato pasta sauce all loaded with herbs.", 
+  "mainImageUrl": "img/home/lasagna-1.png",
+  "images": ["lasagna-1.png","lasagna-2.png","lasagna-3.png","lasagna-4.png"],
+
+  "ingredients": ["lasagna pasta", "tomatoes", "onions", "ground beef", "garlic", "cheese"]
+}
+```
+
+Create `recipe-detail/recipe-detail.template.html`
+
+```html
+<div itemscope itemtype="http://schema.org/Recipe">
+
+    <h2>{{ $ctrl.recipe.title }}</h2>
+
+    <p>{{ $ctrl.recipe.description }}</p>
+
+    <h3>Ingredients</h3>
+    <ul class="ingredients">
+        <li ng-repeat="ingredient in $ctrl.recipe.ingredients">
+            {{ ingredient }}
+        </li>
+    </ul>
+
+</div>
+```
+
+Edit `recipe-detail/recipe-detail.component.js` to use templateUrl:
+
+```js
+angular.module('recipeDetail').component('recipeDetail', {
+        templateUrl: 'recipe-detail/recipe-detail.template.html',
+        controller: ['$routeParams',
+            function RecipeDetailController($routeParams) {
+                this.recipeId = $routeParams.recipeId;
+            }
+        ]
+    });
+```
+
+Add $http to the dependancy list for our controller so we can access the json via http and create a variable `self` to point to the controller. 
+
+We use the `self` variable in the response function to make the data available to the controller (variable scope).
+
+```js
+angular.module('recipeDetail').component('recipeDetail', {
+    templateUrl: 'recipe-detail/recipe-detail.template.html',
+    controller: ['$http', '$routeParams',
+        function RecipeDetailController($http, $routeParams) {
+            var self = this;
+
+            $http.get('data/' + $routeParams.recipeId +  '.json').then(function(response){
+                self.recipe = response.data;
+            });
+        }
+    ]
+});
+```
+
+
+##Adding an Image Swapper
+
+To finish this exercise we will implement an image switcher similar to the one we created in earlier lessons but using our recipe-details.component.
+
+Set the html template for the detail view to show one main image using this portion of the json: `"mainImageUrl": "img/home/lasagna-1.png",`
+
+To get an image to display we add: `<img ng-src="{{ $ctrl.recipe.mainImageUrl }}" />` to the template.
+
+But we are creating an image switcher so we will create a new function in the recipe-detail.component:
+
+```
+self.setImage = function setImage(imageUrl) {
+      self.mainImageUrl = imageUrl;
+};
+```
+
+Followed by a call to the function in the promise function to initialize the first image:
+
+`self.setImage(self.recipe.images[0]);`
+
+And make the following change to the template, adding a class for styling and a source which uses the `mainImageUrl` variable we created in the controller:
+
+`<img ng-src="img/home/{{$ctrl.mainImageUrl}}" class="recipe-detail-image" />`
+
+(Note: we don't need `"mainImageUrl": "img/home/lasagna-1.png",` in the json since we are now refering to the images array.)
+
+Add a list of images to the template that we will click on to swap out the main image. Note the `ng-click` directive and its call to the setImage function we created earlier:
+
+```
+<ul class="recipe-thumbs">
+    <li ng-repeat="img in $ctrl.recipe.images">
+        <img ng-src="img/home/{{img}}" ng-click="$ctrl.setImage(img)" />
+    </li>
+</ul>
+```
+We shoud now be able to click on one of the images in the list to swap out the main image but we need some formatting.
+
+
+###SASS
+
+Add sass to `_recipes.scss` to control the display of the main image:
 
 ```css
-.highlight {
-  transition: all 0.2s;
-  position: absolute;
-  top: 0;
-  background: rgba(255,255,255,0.2);
-  left: 0;
-  z-index: 1;
-  display: block;
-  pointer-events: none 
-  }
-```
-
-```js
-const highlight = document.createElement('span');
-highlight.classList.add('highlight');
-document.body.append(highlight);
-
-function highlightLink() {
-	const linkCoords = this.getBoundingClientRect();
-	const coords = {
-      width: linkCoords.width,
-      height: linkCoords.height,
-      top: linkCoords.top + window.scrollY,
-      left: linkCoords.left + window.scrollX
-    };
-
-    highlight.style.width = `${coords.width}px`;
-    highlight.style.height = `${coords.height}px`;
-    highlight.style.transform = `translate(${coords.left}px, ${coords.top}px)`;
+.recipe-detail-image {
+    margin-top: 1rem;
+}
+.recipe-thumbs {
+    width: 100%;
+    margin: 1rem 0;
+    display: flex;
+    img {
+        padding: 0 0.5rem;
+    }
 }
 
-triggers.forEach(panel => panel.addEventListener('mouseenter', highlightLink));
 ```
 
-```js
-function highlightLink() {
-	console.log(this)
-}
-```
-
-```js
-function highlightLink() {
-	const linkCoords = this.getBoundingClientRect();
-    console.log(linkCoords)
-}
-```
-
-```js
-function highlightLink() {
-	const linkCoords = this.getBoundingClientRect();
-    highlight.style.width = `${linkCoords.width}px`;
-    highlight.style.height = `${linkCoords.height}px`;
-}
-```
-
-```js
-function highlightLink() {
-	const linkCoords = this.getBoundingClientRect();
-    highlight.style.width = `${linkCoords.width}px`;
-    highlight.style.height = `${linkCoords.height}px`;
-    highlight.style.transform = `translate(100px, 100px)`;
-}
-```
-
-
-
-<nav ng-include=" 'includes/nav.html' "></nav>
-
-
-```
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Recipes</title>
-  <script src="https://code.angularjs.org/1.6.2/angular.min.js"></script>
-  <script src="https://code.angularjs.org/1.6.2/angular-route.js"></script>
-  <script src="js/foodapp.module.js"></script>
-  <script src="js/foodapp.config.js"></script>
-  <script src="js/recipes/recipe-list.component.js"></script>
-
-  <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-
-  <base href="/">
-</head>
-<body ng-app="foodApp">
-  <nav ng-include=" 'includes/nav.html' "></nav>
-  <div ng-view></div>
-  <script src="js/scripts.js"></script>
-</body>
-</html>
-```
-
-
+ 
 
 
 

@@ -1,6 +1,15 @@
 <div class="wrap">
+<p>
+  Search: <input ng-model="$ctrl.query" />
+
+    Sort by:
+  <select ng-model="$ctrl.orderProp">
+    <option value="title">Alphabetical</option>
+    <option value="date">Newest</option>
+  </select>
+</p>
 	<ul>
-		<li ng-repeat="recipe in $ctrl.recipes">
+		<li ng-repeat="recipe in $ctrl.recipes  | filter:$ctrl.query | orderBy:$ctrl.orderProp">
 			<img ng-src="img/home/{{ recipe.image }}" />
 			<div>
 				<h1><a href="#0">{{ recipe.title }}</a></h1>

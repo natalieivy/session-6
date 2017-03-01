@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Creating Promises!</title>
+</head>
+<body>
+  <script>
+    const p = new Promise((resolve, reject) => {
+      resolve('Very cool');
+      // reject(Error('Not cool'));
+    });
+
+    p
+    .then(data => {
+      console.log('Data: ' + data);
+    })
+    .catch(err => {
+      console.error('Danger Will Robinson: ' + err);
+    });
+
+  </script>
+</body>
+</html>

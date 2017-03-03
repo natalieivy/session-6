@@ -4,7 +4,8 @@ angular.module('foodApp').component('recipeList', {
 		var self = this;
 		self.orderProp = 'date';
 
-		$http.get('data/recipes.json').then(function (response) {
+		$http.get('data/recipes.json')
+			.then(function (response) {
 			self.recipes = response.data;
 		})
 

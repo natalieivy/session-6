@@ -76,7 +76,8 @@ self.orderProp = 'date';
 Use `get` method of `$http` to fetch the json from the data folder:
 
 ```js
-$http.get('data/recipes.json').then(function (response) {
+$http.get('data/recipes.json')
+    .then(function (response) {
     self.recipes = response.data;
 });
 ```
@@ -96,7 +97,8 @@ angular.module('recipeApp').component('recipeList', {
         var self = this;
         self.orderProp = 'date';
 
-        $http.get('data/recipes.json').then(function (response) {
+        $http.get('data/recipes.json')
+            .then(function (response) {
             self.recipes = response.data;
         });
     }
@@ -171,7 +173,9 @@ Note we are hard coding `#!recipes/` and accessing recipe.name from the json. Al
 
 Add ngRoute to index.html after the main angular load:
 
-`<script src="https://code.angularjs.org/1.5.8/angular-route.js"></script>`
+```
+<script src="https://code.angularjs.org/1.5.8/angular-route.js"></script>
+```
 
 A module's .config() method gives us access to the available providers for configuration. To make the providers, services and directives defined in ngRoute available to our application, we need to add ngRoute as a dependency to our recipeApp module.
 
@@ -189,6 +193,7 @@ Application routes in Angular are declared via $routeProvider, which is the prov
 We can configure the $route service (using it's provider) for our application. In order to be able to quickly locate the configuration code, we put it into a separate file and used the .config suffix.
 
 Create an app.config file in the app folder:
+
 ```js
 angular.module('recipeApp').
     config(['$locationProvider', '$routeProvider',
@@ -224,6 +229,7 @@ angular.module('recipeApp').config(
 ```
 
 * `otherwise` - defines a fallback route to redirect to, when no route definition matches the current URL
+
 * `:recipeId` - the $route service uses the route declaration — '/phones/:recipeId' — as a template that is matched against the current URL. All variables defined with the : prefix are extracted into the (injectable) $routeParams object.
 
 Add a link to `app.config.js` to index.html (after the app.module.js):

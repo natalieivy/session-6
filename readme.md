@@ -1,64 +1,19 @@
 #Session 6 - placeholder
 
-###Search / Sort Filter
-
-Add a search input field to the top of `recipe-list.template.html`. Note the use of [ng-model](https://docs.angularjs.org/api/ng/directive/ngModel):
-
-```
-<p>
-  Search: <input ng-model="$ctrl.query" />
-</p>
-```
-
-Add a filter to the ng-repeat directive:
-
-`<li ng-repeat="recipe in $ctrl.recipes | filter:$ctrl.query">`
-
-Data-binding is one of the core features in Angular. When the page loads, Angular binds the value of the input box to the data model variable specified with ngModel and keeps the two in sync.
-
-The data that a user types into the input box (bound to $ctrl.query) is immediately available as a filter input in the list repeater (`recipe in $ctrl.recipes | filter:$ctrl.query`). When changes to the data model cause the repeater's input to change, the repeater updates the DOM to reflect the current state of the model.
-
-The [filter](https://docs.angularjs.org/api/ng/filter/filter) function uses the `$ctrl.query` value to create a new array that contains only those records that match the query.
-
-###Two Way Data Binding
-
-Add a `<select>` element bound to `$ctrl.orderProp` to the top paragraph, so that our users can pick from the two provided sorting options.
-
-```
-  Sort by:
-  <select ng-model="$ctrl.orderProp">
-    <option value="title">Alphabetical</option>
-    <option value="date">Newest</option>
-  </select>
-```
-Note the values - these are from the json.
-
-Chained the filter filter with the orderBy filter to further process the input for the repeater. 
-
-[`orderBy`](https://docs.angularjs.org/api/ng/filter/orderBy) is a filter that takes an input array, copies it and reorders the copy which is then returned.
-
-`<li ng-repeat="recipe in $ctrl.recipes | filter:$ctrl.query | orderBy:$ctrl.orderProp">`
-
-Add a line to the controller in `recipe-list.component.js` after the recipes array that sets the default value of orderProp to age. If we had not set a default value here, the orderBy filter would remain uninitialized until the user picked an option from the drop-down menu.
-
-`this.orderProp = 'date';`
-
-
-
 ###Fetching the Data
 
 Let's use `recipes.json` in the data folder instead of keeping the data model in the controller. 
 
-We fetch the dataset from our server using one of Angular's built-in services called [$http](https://docs.angularjs.org/api/ng/service/$http). We will use Angular's [dependency injection (DI)](https://docs.angularjs.org/guide/di) to provide the service to the recipeList component's controller.
+We fetch the dataset from our server using one of Angular's built-in [$http](https://docs.angularjs.org/api/ng/service/$http) service.
 
 $http
 * a core Angular service that facilitates communication with the remote HTTP servers
 * core = built into Angular
-* need to make it available to our controller via [dependency injection](https://docs.angularjs.org/guide/di).
+* need to make it available to the recipeList component's controller via [dependency injection](https://docs.angularjs.org/guide/di).
 
 In `recipe-list.component.js` make $http available to the controller:
 
-`controller: function RecipeListController($http) { `
+`controller: function RecipeListController($http) { ...`
 
 Create var `self` - since we are making the assignment of the recipes property in a callback function (`.then(function (response) {}`), where the `this` value is not defined, we introduce a local variable called self that points back to the RecipeListController.
 
@@ -265,6 +220,49 @@ Routing is usually used in conjunction with ngView - a directive that complement
 Here we see nothing when we click on a recipe. That is because there is no defined view associated with the detail route.
 
 The config file makes provision for a recipe-detail template. We will create that now.
+
+###Search / Sort Filter
+
+Add a search input field to the top of `recipe-list.template.html`. Note the use of [ng-model](https://docs.angularjs.org/api/ng/directive/ngModel):
+
+```
+<p>
+  Search: <input ng-model="$ctrl.query" />
+</p>
+```
+
+Add a filter to the ng-repeat directive:
+
+`<li ng-repeat="recipe in $ctrl.recipes | filter:$ctrl.query">`
+
+Data-binding is one of the core features in Angular. When the page loads, Angular binds the value of the input box to the data model variable specified with ngModel and keeps the two in sync.
+
+The data that a user types into the input box (bound to $ctrl.query) is immediately available as a filter input in the list repeater (`recipe in $ctrl.recipes | filter:$ctrl.query`). When changes to the data model cause the repeater's input to change, the repeater updates the DOM to reflect the current state of the model.
+
+The [filter](https://docs.angularjs.org/api/ng/filter/filter) function uses the `$ctrl.query` value to create a new array that contains only those records that match the query.
+
+###Two Way Data Binding
+
+Add a `<select>` element bound to `$ctrl.orderProp` to the top paragraph, so that our users can pick from the two provided sorting options.
+
+```
+  Sort by:
+  <select ng-model="$ctrl.orderProp">
+    <option value="title">Alphabetical</option>
+    <option value="date">Newest</option>
+  </select>
+```
+Note the values - these are from the json.
+
+Chained the filter filter with the orderBy filter to further process the input for the repeater. 
+
+[`orderBy`](https://docs.angularjs.org/api/ng/filter/orderBy) is a filter that takes an input array, copies it and reorders the copy which is then returned.
+
+`<li ng-repeat="recipe in $ctrl.recipes | filter:$ctrl.query | orderBy:$ctrl.orderProp">`
+
+Add a line to the controller in `recipe-list.component.js` after the recipes array that sets the default value of orderProp to age. If we had not set a default value here, the orderBy filter would remain uninitialized until the user picked an option from the drop-down menu.
+
+`this.orderProp = 'date';`
 
 
 

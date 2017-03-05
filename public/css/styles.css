@@ -68,7 +68,7 @@ nav {
 .panel.active {
   flex: 2;
   font-size: 2em;
-  border-bottom: 4px solid #fff; }
+  border-bottom: 4px solid #e99625; }
 
 .highlight {
   transition: all 0.2s;
@@ -101,7 +101,7 @@ nav {
       border: 1px solid #ddd;
       margin-right: 1rem; }
     .wrap li a {
-      color: #666;
+      color: #7e360d;
       text-decoration: none; }
   .wrap .recipe-thumbs {
     display: flex; }

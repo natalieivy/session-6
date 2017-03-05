@@ -80,6 +80,9 @@ nav {
   display: block;
   pointer-events: none; }
 
+.go-away {
+  display: none; }
+
 .wrap {
   background: #eee;
   max-width: 90%;

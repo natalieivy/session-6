@@ -168,13 +168,13 @@ angular.module('foodApp').config(
 	function ($routeProvider, $locationProvider) {
 		$routeProvider.
 			when('/', {
-				template: 'test'
+				template: `<div class="wrap">Test</div>`
 			}).
 			when('/recipes', {
 				template: '<recipe-list></recipe-list>'
 			}).
 			when('/recipes/:recipeId', {
-				template: 'detail'
+				template: `<div class="wrap">Detail</div>`
 			}).
 			when('/reviews', {
 				template: '<review-list></review-list>'
@@ -199,7 +199,7 @@ angular.module('foodApp').config(
 	function ($routeProvider, $locationProvider) {
 		$routeProvider.
 			when('/', {
-				template: 'test'
+				template: `<div class="wrap">Test</div>`
 			}).
 			when('/recipes', {
 				template: '<recipe-list></recipe-list>'
@@ -447,7 +447,56 @@ angular.module('recipeDetail').component('recipeDetail', {
 });
 ```
  
+###Navbar
 
+Using: ng-class
+
+Create a new controller in foodapp.module.js:
+
+```js
+app.controller('NavController', function ($scope, $location) {
+  $scope.isActive = function (viewLocation) {
+    var active = (viewLocation === $location.path());
+    return active;
+  };
+})
+```
+
+Comment out all js in scripts.js
+
+Add controller to the nav:
+
+`<nav ng-controller="NavController">`
+
+Edit one panel
+
+```js
+<div class="panel panel1" ng-class="{ active: isActive('/') }">
+```
+
+If this works then edit the entire navbar:
+
+```html
+<nav ng-controller="navApp">
+  <div class="panels">
+    <div class="panel panel1" ng-class="{ active: isActive('/') }">
+      <a href="/">Home</a>
+    </div>
+    <div class="panel panel2" ng-class="{ active: isActive('/recipes') }">
+      <a href="/recipes">Recipes</a>
+    </div>
+    <div class="panel panel3" ng-class="{ active: isActive('/reviews') }">
+      <a href="/reviews">Reviews</a>
+    </div>
+    <div class="panel panel4" ng-class="{ active: isActive('/delivery') }">
+      <a href="/delivery">Delivery</a>
+    </div>
+    <div class="panel panel5" ng-class="{ active: isActive('/about') }">
+      <a href="/about">About</a>
+    </div>
+  </div>
+</nav>
+  ```
 
 
 

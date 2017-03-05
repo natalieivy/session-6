@@ -10,7 +10,7 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
-  background: linear-gradient(45deg, #5392c6 0%, rgba(255, 26, 102, 0) 70%), linear-gradient(135deg, #3958c6 10%, rgba(6, 67, 249, 0) 80%), linear-gradient(225deg, #33ccc2 10%, rgba(13, 242, 89, 0) 80%), linear-gradient(315deg, #cb4dbd 100%, rgba(249, 158, 31, 0) 70%); }
+  background: #3f504a; }
 
 nav {
   height: 6rem; }
@@ -82,8 +82,12 @@ nav {
 
 .wrap {
   background: #eee;
-  max-width: 940px;
-  margin: 0 auto; }
+  max-width: 90%;
+  padding: 1rem;
+  margin: 2rem auto; }
+  .wrap h1 {
+    font-family: lobster;
+    margin-top: 0; }
   .wrap ul {
     list-style: none;
     padding: 0; }
@@ -96,11 +100,16 @@ nav {
       padding: 0.5rem;
       border: 1px solid #ddd;
       margin-right: 1rem; }
-    .wrap li h1 {
-      font-family: lobster;
-      margin-top: 0; }
-      .wrap li h1 a {
-        color: #666;
-        text-decoration: none; }
+    .wrap li a {
+      color: #666;
+      text-decoration: none; }
+  .wrap .recipe-thumbs {
+    display: flex; }
+    .wrap .recipe-thumbs li {
+      padding: 0; }
+    .wrap .recipe-thumbs img {
+      width: 100%;
+      padding: 0;
+      border: none; }
 
 /*# sourceMappingURL=styles.css.map */

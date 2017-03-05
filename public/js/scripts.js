@@ -7,11 +7,10 @@ function toggleOpen(){
 }
 
 function closePanels(){
-  panels.forEach( (panel) => panel.classList.remove('active'))
+  panels.forEach( panel => panel.classList.remove('active'))
 }
 
-panels.forEach( (panel) => panel.addEventListener('click', toggleOpen))
-
+panels.forEach( panel => panel.addEventListener('click', toggleOpen))
 
 const highlight = document.createElement('span');
 highlight.classList.add('highlight');
@@ -32,8 +31,7 @@ function highlightLink() {
 }
 
 triggers.forEach(panel => panel.addEventListener('mouseenter', highlightLink));
-
-panels.forEach( (panel) => panel.addEventListener('transitionend', highlightLink))
+panels.forEach( panel => panel.addEventListener('transitionend', highlightLink));
 
 
 

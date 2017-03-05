@@ -2,6 +2,8 @@
 
 ###Git config
 
+https://git-scm.com/book/en/v2/Git-Basics-Git-Aliases
+
 ```
 $ git config --global alias.co checkout
 $ git config --global alias.br branch

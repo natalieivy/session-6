@@ -1,6 +1,6 @@
 angular.module('foodApp').component('recipeList', {
 	templateUrl: 'js/recipes/recipe-list.template.html',
-	controller: function RecipeListController($http) {
+	controller: function RecipeListController() {
 		this.recipes = [
 			{
 				name: 'recipe1309',

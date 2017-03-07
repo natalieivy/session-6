@@ -1,17 +1,8 @@
 #Session 6
 
-###Git config
+Food App Continued
 
-https://git-scm.com/book/en/v2/Git-Basics-Git-Aliases
-
-```
-$ git config --global alias.co checkout
-$ git config --global alias.br branch
-$ git config --global alias.ci commit
-$ git config --global alias.st status
-```
-
-###Fetching the Data
+###$HTTP
 
 Let's use `recipes.json` in the data folder instead of keeping the data model in the controller. 
 

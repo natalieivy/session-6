@@ -22,25 +22,18 @@ Use `get` method of `$http` to fetch the json from the data folder:
 $http.get('data/recipes.json')
     .then(function (response) {
         this.recipes = response.data;
+        console.log(this.recipes)
     });
+    console.log('outer: ' + this.recipes)
 ```
 
 Note: in JavaScript you can nest functions, that is you can define functions inside functions. 
 
-While nested functions capture variables defined in parent functions in a closure, they do not inherit the this.
+While nested functions capture variables defined in parent functions in a closure, they do not inherit `this`.
 
-```js
-	controller: function RecipeListController($http) {
-		console.log('1: ' + this)
-		$http.get('data/recipes.json')
-			.then(function (response) {
-				console.log('2: ' + this)
-				this.recipes = response.data;
-			});
-	}
-```
+We are making the assignment of the recipes in a nested function (`.then(function (response) {}`), where the `this` value is not defined.
 
-Create var `self` - since we are making the assignment of the recipes property in a nested function (`.then(function (response) {}`), where the `this` value is not defined, we introduce a local variable called self that points back to the RecipeListController.
+One Solution is to create a variable `self` - , we introduce a local variable called self that points back to the RecipeListController.
 
 ```js
 controller: function RecipeListController($http) {
@@ -64,24 +57,22 @@ angular.module('foodApp').component('recipeList', {
 })
 ```
 
-* `then` is a promise which runs the following function when the data is received (the `response`):
-* since we want the `response.data` to belong to the RecipeListController function we assign it to `self.recipes`.
-
-We should see no change to the view but the data is now being accessed via http from the data folder.
-
-Aside: arrow functions avoid the 'this' problem. No need for a self variable.
+Another solution is to use Arrow functions which avoid the 'this' problem. No need for a self variable. See `_arrow-functions`
 
 ```js
 angular.module('foodApp').component('recipeList', {
-	templateUrl: 'js/recipes/recipe-list.template.html',
-	controller: function RecipeListController($http) {
-		$http.get('data/recipes.json')
-			.then((response) => this.recipes = response.data);
-	}
+  templateUrl: 'js/recipes/recipe-list.template.html',
+  controller: function RecipeListController($http) {
+    $http.get('data/recipes.json').then( response => this.recipes = response.data)
+  }
 })
 ```
 
-###Dive into Promises
+###then
+
+* `then` is a promise which runs the following function when the data is received (the `response`)
+
+###Promises
 
 see index.html in the promises folder:
 
@@ -166,33 +157,14 @@ We can configure the $route service (using it's provider) for our application. I
 Add a route for the new recipe links:
 
 ```js
-angular.module('foodApp').config(
-	function ($routeProvider, $locationProvider) {
-		$routeProvider.
-			when('/', {
-				template: `<div class="wrap">Test</div>`
-			}).
-			when('/recipes', {
-				template: '<recipe-list></recipe-list>'
-			}).
+
 			when('/recipes/:recipeId', {
 				template: `<div class="wrap">Detail</div>`
 			}).
-			when('/reviews', {
-				template: '<review-list></review-list>'
-			}).
-			otherwise('/404');
-		$locationProvider.html5Mode(true)
-	})
+
 ```
 
 * `:recipeId` - the $route service uses the route declaration — '/recipes/:recipeId' — as a template that is matched against the current URL. All variables defined with the : prefix are extracted into the (injectable) $routeParams object.
-
-```html
-<h1><a href="recipes/{{ recipe.name }} ">{{ recipe.title }}</a></h1>
-```
-
-Here we see nothing when we click on a recipe. That is because there is no defined view associated with the detail route.
 
 The config file makes provision for a recipe-detail template. 
 
@@ -238,7 +210,7 @@ We can then inject the routeParams service of ngRoute into our controller so tha
 
 ```
 angular.module('foodApp').component('recipeDetail', {
-  template: '<p>Detail view for {{$ctrl.recipeId}}</p>',
+  template: '<div class="wrap">Detail view for {{$ctrl.recipeId}}</div>',
 
   controller: function RecipeDetailController($routeParams) {
     this.recipeId = $routeParams.recipeId;
@@ -247,27 +219,27 @@ angular.module('foodApp').component('recipeDetail', {
 });
 ```
 
-Add `recipeDetail` as a dependency to our application in `app.module.js`:
+<!-- Add `recipeDetail` as a dependency to our application in `app.module.js`:
 
 ```
 angular.module('recipeApp', [
     'ngRoute',
-    'recipeDetail',
-    'recipeList'
+    'recipeDetail'
 ]);
-```
+``` -->
 
 Link to recipe-detail files:
 
 ```
 <head>
     ...
-    <script src="js/recipes/recipe-detail.component.js"></script>
+    <script src="/js/recipes/recipe-detail.module.js"></script>
+    <script src="/js/recipes/recipe-detail.component.js"></script>
     ...
 </head>
 ```
 
-Clicking on the recipe links in the main view should take you to our stub template. 
+Clicking on the recipe links in the list view should take you to our stub template. 
 
 
 ###Adding JSON and the Detail Template
@@ -287,7 +259,7 @@ Review `data/recipe1309.json`:
 }
 ```
 
-Create `recipes/recipe-detail.template.html`
+Create `js/recipes/recipe-detail.template.html`
 
 ```html
 <div class="wrap" itemscope itemtype="http://schema.org/Recipe">
@@ -311,12 +283,6 @@ Edit `recipe-detail/recipe-detail.component.js` to use templateUrl:
 ```js
 angular.module('foodApp').component('recipeDetail', {
   templateUrl: 'js/recipes/recipe-detail.template.html',
-
-  controller: function RecipeDetailController($routeParams) {
-    this.recipeId = $routeParams.recipeId;
-  }
-
-});
 ```
 
 Add $http to the dependancy list for our controller so we can access the json via http and create a variable `self` to point to the controller. 
@@ -339,15 +305,84 @@ angular.module('foodApp').component('recipeDetail', {
 });
 ```
 
+or, using and arrow function: 
+
+```
+     $http.get('data/' + $routeParams.recipeId +  '.json')
+      .then(response => this.recipe = response.data);
+```
+
+##Adding an Image Swapper
+
+Implement an image switcher using our recipe-details.component.
+
+Set the html template for the detail view to show one main image using this entry in recipe1309.json: `"mainImageUrl": "lasagna-1.png",`
+
+Add to the template:
+
+`<img ng-src="img/home/{{ $ctrl.recipe.mainImageUrl }}" />` 
+
+But we are creating an image switcher so we will create a new function in the recipe-detail.component:
+
+```
+self.setImage = function (imageUrl) {
+      self.mainImageUrl = imageUrl;
+};
+```
+
+Followed by a call to the function in the promise function to initialize the first image:
+
+`self.setImage(self.recipe.images[0]);`
+
+And make the following change to the template, adding a class for styling and a source which uses the `mainImageUrl` variable we created in the controller:
+
+`<img ng-src="img/home/{{$ctrl.mainImageUrl}}" class="recipe-detail-image" />`
+
+(Note: we no longer need `"mainImageUrl": "img/home/lasagna-1.png",` in the json since we are now refering to the images array.)
+
+###ng-click
+
+Add a list of images to the template that we will click on to swap out the main image. Note the `ng-click` directive and its call to the setImage function we created earlier:
+
+```html
+<ul class="recipe-thumbs">
+    <li ng-repeat="img in $ctrl.recipe.images">
+        <img ng-src="img/home/{{img}}" ng-click="$ctrl.setImage(img)" />
+    </li>
+</ul>
+```
+We should now be able to click on one of the images in the list to swap out the main image but we need some formatting.
+
+Final refactored component:
+
+```js
+angular.module('foodApp').component('recipeDetail', {
+  templateUrl: 'js/recipes/recipe-detail.template.html',
+
+  controller: function RecipeDetailController($http, $routeParams) {
+
+     $http.get('data/' + $routeParams.recipeId +  '.json')
+      .then(response => {
+        this.recipe = response.data;
+        this.setImage(this.recipe.images[2])
+        });
+
+      this.setImage = imageUrl => this.mainImageUrl = imageUrl;
+
+  }
+
+});
+```
+
 ###Search / Sort Filter
 
 Add a search input field to the top of `recipe-list.template.html`. Note the use of [ng-model](https://docs.angularjs.org/api/ng/directive/ngModel):
 
 ```
 <div class="wrap">
-	<span>
-		Search: <input ng-model=" $ctrl.query " />
-	</span>
+  <span>
+    Search: <input ng-model=" $ctrl.query " />
+  </span>
 </div>
 ```
 
@@ -367,17 +402,17 @@ Add a `<select>` element bound to `$ctrl.orderProp` to the top paragraph, so tha
 
 ```html
 <div class="wrap">
-	<span>
-		Search: <input ng-model=" $ctrl.query " />
-	</span>
+  <span>
+    Search: <input ng-model=" $ctrl.query " />
+  </span>
 
-	<span>
-		Sort by:
-		<select ng-model="$ctrl.orderProp">
+  <span>
+    Sort by:
+    <select ng-model="$ctrl.orderProp">
     <option value="title">Alphabetical</option>
     <option value="date">Newest</option>
   </select>
-	</span>
+  </span>
 </div>
 ```
 Note the values - these are from the json.
@@ -391,63 +426,6 @@ Chained the filter filter with the orderBy filter to further process the input f
 Add a line to the controller in `recipe-list.component.js` after the recipes array that sets the default value of orderProp to age. If we had not set a default value here, the orderBy filter would remain uninitialized until the user picked an option from the drop-down menu.
 
 `this.orderProp = 'date';`
-
-
-##Adding an Image Swapper
-
-To finish this exercise we will implement an image switcher similar to the one we created in earlier lessons but using our recipe-details.component.
-
-Set the html template for the detail view to show one main image using this portion of the recipe1309.json: 
-`"mainImageUrl": "lasagna-1.png",`
-
-To get an image to display we add: `<img ng-src="img/home/{{ $ctrl.recipe.mainImageUrl }}" />` to the template.
-
-But we are creating an image switcher so we will create a new function in the recipe-detail.component:
-
-```
-self.setImage = function (imageUrl) {
-      self.mainImageUrl = imageUrl;
-};
-```
-
-Followed by a call to the function in the promise function to initialize the first image:
-
-`self.setImage(self.recipe.images[0]);`
-
-And make the following change to the template, adding a class for styling and a source which uses the `mainImageUrl` variable we created in the controller:
-
-`<img ng-src="img/home/{{$ctrl.mainImageUrl}}" class="recipe-detail-image" />`
-
-(Note: we don't need `"mainImageUrl": "img/home/lasagna-1.png",` in the json since we are now refering to the images array.)
-
-Add a list of images to the template that we will click on to swap out the main image. Note the `ng-click` directive and its call to the setImage function we created earlier:
-
-```html
-<ul class="recipe-thumbs">
-    <li ng-repeat="img in $ctrl.recipe.images">
-        <img ng-src="img/home/{{img}}" ng-click="$ctrl.setImage(img)" />
-    </li>
-</ul>
-```
-We should now be able to click on one of the images in the list to swap out the main image but we need some formatting.
-
-Refactored:
-
-```js
-angular.module('recipeDetail').component('recipeDetail', {
-  templateUrl: 'js/recipes/recipe-detail.template.html',
-
-  controller: function RecipeDetailController($http, $routeParams) {
-    $http.get('data/' + $routeParams.recipeId + '.json')
-      .then(response => {
-        this.recipe = response.data;
-        this.setImage(this.recipe.images[0]);
-      });
-    this.setImage = (imageUrl) => this.mainImageUrl = imageUrl;
-  }
-
-});
-```
  
 ###Navbar
 
@@ -479,7 +457,7 @@ Edit one panel
 If this works then edit the entire navbar:
 
 ```html
-<nav ng-controller="navApp">
+<nav ng-controller="NavController">
   <div class="panels">
     <div class="panel panel1" ng-class="{ active: isActive('/') }">
       <a href="/">Home</a>

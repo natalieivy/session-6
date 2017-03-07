@@ -2,6 +2,15 @@
 
 Food App Continued
 
+##Homework
+
+Review the creation of the details page. 
+
+1. Add a details section to last week's homework.
+1. Include an image switcher
+
+Good luck.
+
 ###$HTTP
 
 Let's use `recipes.json` in the data folder instead of keeping the data model in the controller. 

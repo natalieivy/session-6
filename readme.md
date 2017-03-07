@@ -6,8 +6,9 @@ Food App Continued
 
 Review the creation of the details page. 
 
-1. Add a details section to last week's homework.
+1. Add at least two detail pages to last week's homework
 1. Include an image switcher
+1. Tidy up the view using SASS
 
 Good luck.
 

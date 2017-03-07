@@ -1,5 +1,7 @@
 #Session 6
 
+Food App Continued
+
 ##Homework
 
 Review the creation of the details page. 
@@ -30,8 +32,6 @@ If you need help setting the permissions on the db folder [see this post](http:/
 
 Good luck.
 
-##Food App Continued
-
 ###$HTTP
 
 Let's use `recipes.json` in the data folder instead of keeping the data model in the controller. 
@@ -54,7 +54,6 @@ $http.get('data/recipes.json')
         this.recipes = response.data;
         console.log(this.recipes)
     });
-    console.log('outer: ' + this.recipes)
 ```
 
 Note: in JavaScript you can nest functions, that is you can define functions inside functions. 
@@ -87,7 +86,9 @@ angular.module('foodApp').component('recipeList', {
 })
 ```
 
-Another solution is to use Arrow functions which avoid the 'this' problem. No need for a self variable. See `_arrow-functions`
+Another solution is to use Arrow functions which avoid the 'this' problem. No need for a self variable. 
+
+See `_arrow-functions`
 
 ```js
 angular.module('foodApp').component('recipeList', {
@@ -123,7 +124,7 @@ postsPromise.then(data => {
 })
 ```
 
-data is a readable stream. Since a streat can be any type a data (images, audio, text) we need to convert it.
+data is a readable stream. Since a stream can be any type a data (images, audio, text) we need to convert it.
 
 ```
 const postsPromise = fetch('https://api.punkapi.com/v2/beers/'); 
@@ -172,7 +173,9 @@ Now, clicking on the individual recipe shows a 404 address in the browser's loca
 
 ###Recall
 
-A module's .config() method gives us access to tools for configuration. To make the providers, services and directives defined in ngRoute available to our application, we added ngRoute as a dependency to our foodApp module:
+A module's .config() method gives us access to tools for configuration. 
+
+To make the providers, services and directives defined in ngRoute available to our application, we added ngRoute as a dependency to our foodApp module:
 
 ```js
 angular.module('foodApp', [
@@ -182,7 +185,9 @@ angular.module('foodApp', [
 
 Application routes in Angular are declared via $routeProvider. This service makes it easy to wire together controllers, view templates, and the current URL location in the browser. 
 
-We can configure the $route service (using it's provider) for our application. In order to be able to quickly locate the configuration code, we put it into a separate file and used the .config suffix.
+We can configure the $route service (using it's provider) for our application. 
+
+In order to be able to quickly locate the configuration code, we put it into a separate file and used the .config suffix.
 
 Add a route for the new recipe links:
 
@@ -194,9 +199,11 @@ Add a route for the new recipe links:
 
 ```
 
-* `:recipeId` - the $route service uses the route declaration — '/recipes/:recipeId' — as a template that is matched against the current URL. All variables defined with the : prefix are extracted into the (injectable) $routeParams object.
+* `:recipeId` - the $route service uses the route declaration — '/recipes/:recipeId' — as a template that is matched against the current URL. 
 
-The config file makes provision for a recipe-detail template. 
+All variables defined with the : prefix are extracted into the (injectable) $routeParams object.
+
+Create a reference to the recipe-detail template:
 
 ```js
 angular.module('foodApp').config(
@@ -249,14 +256,14 @@ angular.module('foodApp').component('recipeDetail', {
 });
 ```
 
-<!-- Add `recipeDetail` as a dependency to our application in `app.module.js`:
+Add `recipeDetail` as a dependency to our application in `app.module.js`:
 
 ```
 angular.module('recipeApp', [
     'ngRoute',
     'recipeDetail'
 ]);
-``` -->
+```
 
 Link to recipe-detail files:
 

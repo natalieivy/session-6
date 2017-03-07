@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Arrow Functions</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="box">
+      <h2>Bro Co</h2>
+      <p class="social">@social</p>
+    </div>
+  </div>
+
+  <script>
+    console.log(this)
+    const box = document.querySelector('.box');
+    box.addEventListener('click', function () {
+      console.log(this)
+      // let first = 'opening';
+      // let second = 'open';
+
+      // if (this.classList.contains(first)) {
+      //   [first, second] = [second, first];
+      // }
+
+      // this.classList.toggle('opening');
+      // setTimeout(() => {
+      //   console.log(this);
+      //   this.classList.toggle('open');
+      // }, 500);
+    });
+  </script>
+
+</body>
+
+</html>

@@ -1,7 +1,5 @@
 #Session 6
 
-Food App Continued
-
 ##Homework
 
 Review the creation of the details page. 
@@ -31,6 +29,8 @@ $ mongo
 If you need help setting the permissions on the db folder [see this post](http://stackoverflow.com/questions/28987347/setting-read-write-permissions-on-mongodb-folder).
 
 Good luck.
+
+##Food App Continued
 
 ###$HTTP
 

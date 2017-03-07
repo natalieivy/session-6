@@ -8,6 +8,7 @@ Review the creation of the details page.
 
 1. Add at least two detail pages to last week's homework
 1. Include an image switcher
+1. Include a filter and view toggle for the master page
 1. Tidy up the view using SASS
 
 

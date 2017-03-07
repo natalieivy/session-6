@@ -10,6 +10,26 @@ Review the creation of the details page.
 1. Include an image switcher
 1. Tidy up the view using SASS
 
+
+[Download and install](https://www.mongodb.com/download-center) the community edition of Mongodb. 
+(Install instructions for [MacOS](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/))
+
+Be sure to create a `/data/db/` directory at the top level of your hard drive.
+Run `mongod` in a Terminal tab to start mongod.
+Try running a few commands *in another tab* to ensure its functioning:
+
+```sh
+$ mongo
+> show dbs
+> use puppies
+> db.createCollection('toys')
+> show collections
+> db.toys.insert({name: 'yoyo', color: 'red'})
+> db.toys.find()
+```
+
+If you need help setting the permissions on the db folder [see this post](http://stackoverflow.com/questions/28987347/setting-read-write-permissions-on-mongodb-folder).
+
 Good luck.
 
 ###$HTTP

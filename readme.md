@@ -229,19 +229,7 @@ angular.module('foodApp').config(
 
 ###Creating the Recipe Details Component
 
-Create stubs for recipe details in the new `recipes` directory:
-
-`recipes/recipe-detail.module.js`:
-
-```
-angular.module('recipeDetail', [
-    'ngRoute'
-]);
-```
-
-We inject ngRoute into the recipeDetail module since we will be needing it.
-
-We can then inject the routeParams service of ngRoute into our controller so that we can extract the recipeId.
+We inject the routeParams service of ngRoute into our controller so that we can extract the recipeId and use it in our stub.
 
 `recipe-detail.component.js`
 
@@ -256,21 +244,11 @@ angular.module('foodApp').component('recipeDetail', {
 });
 ```
 
-Add `recipeDetail` as a dependency to our application in `app.module.js`:
-
-```
-angular.module('recipeApp', [
-    'ngRoute',
-    'recipeDetail'
-]);
-```
-
 Link to recipe-detail files:
 
 ```
 <head>
     ...
-    <script src="/js/recipes/recipe-detail.module.js"></script>
     <script src="/js/recipes/recipe-detail.component.js"></script>
     ...
 </head>
@@ -342,11 +320,11 @@ angular.module('foodApp').component('recipeDetail', {
 });
 ```
 
-or, using and arrow function: 
+Refactor to use an arrow function: 
 
 ```
-     $http.get('data/' + $routeParams.recipeId +  '.json')
-      .then(response => this.recipe = response.data);
+$http.get('data/' + $routeParams.recipeId +  '.json')
+.then(response => this.recipe = response.data);
 ```
 
 ##Adding an Image Swapper
@@ -388,7 +366,7 @@ Add a list of images to the template that we will click on to swap out the main 
     </li>
 </ul>
 ```
-We should now be able to click on one of the images in the list to swap out the main image but we need some formatting.
+We should now be able to click on one of the images in the list to swap out the main image.
 
 Final refactored component:
 

@@ -27,7 +27,7 @@ $ mongo
 > db.toys.find()
 > exit
 ```
-Do a clean exit of mongod using quit()
+Do a clean exit of mongod by closing the terminal tab.
 
 If you need help setting the permissions on the db folder [see this post](http://stackoverflow.com/questions/28987347/setting-read-write-permissions-on-mongodb-folder).
 

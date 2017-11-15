@@ -22,6 +22,8 @@ Review the creation of components below.
 
 Good luck. -->
 
+
+
 ## Components
 
 Set up a simple html page bootstrapped with Angular (code.angularjs.org):

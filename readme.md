@@ -1,13 +1,13 @@
-#Session 6
+# Session 6
 
-##Homework
+<!-- ## Homework
 
 Review the creation of the details page. 
 
 1. Add at least two detail pages to last week's homework
 1. Include an image switcher
 1. Include a filter and view toggle for the master page
-1. Tidy up the view using SASS
+1. Tidy up the view using SASS -->
 
 
 [Download and install](https://www.mongodb.com/download-center) the community edition of Mongodb. 
@@ -32,9 +32,9 @@ Do a clean exit of mongod by closing the terminal tab.
 If you need help setting the permissions on the db folder [see this post](http://stackoverflow.com/questions/28987347/setting-read-write-permissions-on-mongodb-folder).
 
 
-##Food App Continued
+## Angular App continued
 
-###$HTTP
+### $HTTP
 
 Let's use `recipes.json` in the data folder instead of keeping the data model in the controller. 
 
@@ -69,6 +69,8 @@ One Solution is to create a variable `self` - , we introduce a local variable ca
 ```js
 controller: function RecipeListController($http) {
     var self = this;
+    ...
+  }
 ```
 
 Here is the complete component:
@@ -101,15 +103,15 @@ angular.module('foodApp').component('recipeList', {
 })
 ```
 
-###then
+### then
 
 * `then` is a promise which runs the following function when the data is received (the `response`)
 
-###Promises
+### Promises
 
 see index.html in the promises folder:
 
-```js
+```html
 <script>
     console.log('fetch data from beers - like $http')
     const posts = fetch('https://api.punkapi.com/v2/beers/'); 
@@ -128,7 +130,7 @@ postsPromise.then(data => {
 
 data is a readable stream. Since a stream can be any type a data (images, audio, text) we need to convert it.
 
-```
+```js
 const postsPromise = fetch('https://api.punkapi.com/v2/beers/'); 
 
 postsPromise
@@ -138,7 +140,7 @@ postsPromise
 
 .then fires when there is a successful result. Listen for errors using .catch
 
-```
+```js
 const postsPromise = fetch('https://api.punkapi.com/v2/beers/'); 
 
 postsPromise
@@ -148,22 +150,23 @@ postsPromise
     console.error(err);
   })
 ```
+
 (Create an error by mangling the fetch URI.)
 
-#####Custom Promises
+##### Custom Promises
 
 See 2-custom-promise.html
 
-#####Chaining (waterfall) Promises
+##### Chaining (waterfall) Promises
 
 See 3-chaining-promises.html
 
-#####Multiple Promises
+##### Multiple Promises
 
 4-multiple-promises.html
 
 
-###Adding Routing to Display Individual Recipes
+### Adding Routing to Display Individual Recipes
 
 Note the addition of recipe1309.json to the data directory. 
 
@@ -173,7 +176,7 @@ Use the json's `recipe.name` expression in the html template:
 
 Now, clicking on the individual recipe shows a 404 address in the browser's location bar since we do not have routes set up for these yet.
 
-###Recall
+### Recall
 
 A module's .config() method gives us access to tools for configuration. 
 
@@ -229,7 +232,7 @@ angular.module('foodApp').config(
 ```
 
 
-###Creating the Recipe Details Component
+### Creating the Recipe Details Component
 
 We inject the routeParams service of ngRoute into our controller so that we can extract the recipeId and use it in our stub.
 
@@ -259,7 +262,7 @@ Link to recipe-detail files:
 Clicking on the recipe links in the list view should take you to our stub template. 
 
 
-###Adding JSON and the Detail Template
+### Adding JSON and the Detail Template
 
 Review `data/recipe1309.json`:
 
@@ -300,6 +303,8 @@ Edit `recipe-detail/recipe-detail.component.js` to use templateUrl:
 ```js
 angular.module('foodApp').component('recipeDetail', {
   templateUrl: 'js/recipes/recipe-detail.template.html',
+  ...
+})
 ```
 
 Add $http to the dependancy list for our controller so we can access the json via http and create a variable `self` to point to the controller. 
@@ -329,7 +334,7 @@ $http.get('data/' + $routeParams.recipeId +  '.json')
 .then(response => this.recipe = response.data);
 ```
 
-##Adding an Image Swapper
+## Adding an Image Swapper
 
 Implement an image switcher using our recipe-details.component.
 
@@ -357,7 +362,7 @@ And make the following change to the template, adding a class for styling and a 
 
 (Note: we no longer need `"mainImageUrl": "img/home/lasagna-1.png",` in the json since we are now refering to the images array.)
 
-###ng-click
+### ng-click
 
 Add a list of images to the template that we will click on to swap out the main image. Note the `ng-click` directive and its call to the setImage function we created earlier:
 
@@ -391,7 +396,7 @@ angular.module('foodApp').component('recipeDetail', {
 });
 ```
 
-###Search / Sort Filter
+### Search / Sort Filter
 
 Add a search input field to the top of `recipe-list.template.html`. Note the use of [ng-model](https://docs.angularjs.org/api/ng/directive/ngModel):
 
@@ -413,7 +418,7 @@ The data that a user types into the input box (bound to $ctrl.query) is immediat
 
 The [filter](https://docs.angularjs.org/api/ng/filter/filter) function uses the `$ctrl.query` value to create a new array that contains only those records that match the query.
 
-###Two Way Data Binding
+### Two Way Data Binding
 
 Add a `<select>` element bound to `$ctrl.orderProp` to the top paragraph, so that our users can pick from the two provided sorting options.
 
@@ -444,7 +449,7 @@ Add a line to the controller in `recipe-list.component.js` after the recipes arr
 
 `this.orderProp = 'date';`
  
-###Navbar
+### Navbar
 
 Using: ng-class
 
@@ -467,7 +472,7 @@ Add controller to the nav:
 
 Edit one panel
 
-```js
+```html
 <div class="panel panel1" ng-class="{ active: isActive('/') }">
 ```
 

@@ -1,25 +1,36 @@
+/* line 1, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_base.scss */
 html {
   box-sizing: border-box;
   font-family: 'helvetica neue';
   font-size: 20px;
-  font-weight: 200; }
+  font-weight: 200;
+}
 
+/* line 7, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_base.scss */
 *, *:before, *:after {
-  box-sizing: inherit; }
+  box-sizing: inherit;
+}
 
+/* line 10, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_base.scss */
 body {
   min-height: 100vh;
   margin: 0;
-  background: #3f504a; }
+  background: #3f504a;
+}
 
+/* line 1, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_nav.scss */
 nav {
-  height: 6rem; }
+  height: 6rem;
+}
 
+/* line 5, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_nav.scss */
 .panels {
   min-height: 100%;
   overflow: hidden;
-  display: flex; }
+  display: flex;
+}
 
+/* line 11, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_nav.scss */
 .panel {
   flex: 1;
   justify-content: center;
@@ -32,23 +43,35 @@ nav {
   transition: font-size 0.7s cubic-bezier(0.57, -0.43, 0.75, 1.23), flex 0.7s cubic-bezier(0.61, -0.19, 0.7, -0.11);
   font-size: 20px;
   background-size: cover;
-  background-position: center; }
+  background-position: center;
+}
 
+/* line 26, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_nav.scss */
 .panel1 {
-  background-image: url(../img/1.jpg); }
+  background-image: url(../images/1.jpg);
+}
 
+/* line 30, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_nav.scss */
 .panel2 {
-  background-image: url(../img/2.jpg); }
+  background-image: url(../images/2.jpg);
+}
 
+/* line 34, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_nav.scss */
 .panel3 {
-  background-image: url(../img/4.jpg); }
+  background-image: url(../images/4.jpg);
+}
 
+/* line 38, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_nav.scss */
 .panel4 {
-  background-image: url(../img/3.jpg); }
+  background-image: url(../images/3.jpg);
+}
 
+/* line 42, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_nav.scss */
 .panel5 {
-  background-image: url(../img/5.jpg); }
+  background-image: url(../images/5.jpg);
+}
 
+/* line 46, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_nav.scss */
 .panel * {
   flex: 1 0 auto;
   display: flex;
@@ -56,20 +79,26 @@ nav {
   align-items: center;
   margin: 0;
   width: 100%;
-  transition: transform 0.5s; }
+  transition: transform 0.5s;
+}
 
+/* line 56, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_nav.scss */
 .panel a {
   color: #fff;
   text-decoration: none;
   font-family: 'Lobster', cursive;
   text-shadow: 0 0 4px rgba(0, 0, 0, 0.72), 0 0 14px rgba(0, 0, 0, 0.45);
-  font-size: 1.5em; }
+  font-size: 1.5em;
+}
 
+/* line 64, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_nav.scss */
 .panel.active {
   flex: 2;
   font-size: 2em;
-  border-bottom: 4px solid #e99625; }
+  border-bottom: 4px solid #e99625;
+}
 
+/* line 70, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_nav.scss */
 .highlight {
   transition: all 0.2s;
   position: absolute;
@@ -78,40 +107,70 @@ nav {
   left: 0;
   z-index: 1;
   display: block;
-  pointer-events: none; }
+  pointer-events: none;
+}
 
+/* line 81, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_nav.scss */
 .go-away {
-  display: none; }
+  display: none;
+}
 
+/* line 1, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_recipes.scss */
 .wrap {
   background: #eee;
   max-width: 90%;
   padding: 1rem;
-  margin: 2rem auto; }
-  .wrap h1 {
-    font-family: lobster;
-    margin-top: 0; }
-  .wrap ul {
-    list-style: none;
-    padding: 0; }
-  .wrap li {
-    display: flex;
-    padding: 1rem; }
-    .wrap li img {
-      width: 30%;
-      height: 100%;
-      padding: 0.5rem;
-      border: 1px solid #ddd;
-      margin-right: 1rem; }
-    .wrap li a {
-      color: #7e360d;
-      text-decoration: none; }
-  .wrap .recipe-thumbs {
-    display: flex; }
-    .wrap .recipe-thumbs li {
-      padding: 0; }
-    .wrap .recipe-thumbs img {
-      width: 100%;
-      padding: 0;
-      border: none; }
+  margin: 2rem auto;
+}
 
+/* line 6, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_recipes.scss */
+.wrap h1 {
+  font-family: lobster;
+  margin-top: 0;
+}
+
+/* line 10, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_recipes.scss */
+.wrap ul {
+  list-style: none;
+  padding: 0;
+}
+
+/* line 14, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_recipes.scss */
+.wrap li {
+  display: flex;
+  padding: 1rem;
+}
+
+/* line 17, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_recipes.scss */
+.wrap li img {
+  width: 30%;
+  height: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  margin-right: 1rem;
+}
+
+/* line 24, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_recipes.scss */
+.wrap li a {
+  color: #7e360d;
+  text-decoration: none;
+}
+
+/* line 29, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_recipes.scss */
+.wrap .recipe-thumbs {
+  display: flex;
+}
+
+/* line 31, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_recipes.scss */
+.wrap .recipe-thumbs li {
+  padding: 0;
+}
+
+/* line 34, /Volumes/Bucket/NYU/intermediate/session-6/myapp/public/scss/imports/_recipes.scss */
+.wrap .recipe-thumbs img {
+  width: 100%;
+  padding: 0;
+  border: none;
+}
+
+/*# sourceMappingURL=../stylesheets/styles.map */

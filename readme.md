@@ -22,7 +22,33 @@ Review the creation of components below.
 
 Good luck. -->
 
+## Setup
 
+Review the manifest. 
+
+cd into the myapp directory and `npm install`
+
+`npm run boom!`
+
+Note myapp.js:
+
+```js
+alert('hey')
+
+const panels = document.querySelectorAll('.panel')
+const triggers = document.querySelectorAll('a')
+
+function toggleOpen(){
+  closePanels()
+  this.classList.toggle('active')
+}
+
+function closePanels(){
+  panels.forEach( (panel) => panel.classList.remove('active'))
+}
+
+panels.forEach( (panel) => panel.addEventListener('click', toggleOpen))
+```
 
 ## Components
 

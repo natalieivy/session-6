@@ -1,5 +1,28 @@
 # Session 6
 
+## Homework
+
+[Download and install](https://www.mongodb.com/download-center) the community edition of Mongodb. 
+(Install instructions for [MacOS](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/))
+
+Be sure to create a `/data/db/` directory at the top level of your hard drive.
+Run `mongod` in a Terminal tab to start mongod.
+Try running a few commands *in another tab* to ensure its functioning:
+
+```sh
+$ mongo
+> show dbs
+> use puppies
+> db.createCollection('toys')
+> show collections
+> db.toys.insert({name: 'yoyo', color: 'red'})
+> db.toys.find()
+> exit
+```
+Do a clean exit of mongod by closing the terminal tab.
+
+If you need help setting the permissions on the db folder [see this post](http://stackoverflow.com/questions/28987347/setting-read-write-permissions-on-mongodb-folder).
+
 <!-- ## Homework
 
 Review the creation of the details page. 
@@ -30,7 +53,7 @@ cd into the myapp directory and `npm install`
 
 `npm run boom!`
 
-Note myapp.js:
+In myapp.js:
 
 ```js
 alert('hey')
@@ -50,111 +73,52 @@ function closePanels(){
 panels.forEach( (panel) => panel.addEventListener('click', toggleOpen))
 ```
 
-## Components
+## Angular
 
-Set up a simple html page bootstrapped with Angular (code.angularjs.org):
+npm install angular@1.6.2 --save
+npm install angular-route@1.6.2 --save
+
+import it and a new nav.js file into myapp.js
+
+```
+import angular from 'angular'
+import navjs from './nav'
+```
+
+Test Angular
 
 ```html
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>AngularJS Module</title>
-    <script src="https://code.angularjs.org/1.6.2/angular.js"></script>
-    <script src="test.js"></script>
-</head>
-
-<body>
-    <div ng-app="myApp">
-        <div ng-controller="GreetUserController">
-            <p>Hello {{ user }}</p>
-        </div>
-    </div>
-</body>
-</html>
-```
-
-test.js:
-
-```js
-angular.module('myApp', []);
-
-angular.module('myApp').controller('GreetUserController', function( $scope ){
-    $scope.user = 'John'
-})
-```
-
-refactored:
-
-```js
-var myApp = angular.module('myApp', []);
-
-myApp.controller('GreetUserController', $scope  =>  $scope.user = 'John' )
-```
-
-### Create a component
-
-(Comment out the controller.) Components are referenced directly in the html via custom tags:
-
-```html
-<div ng-app="myApp">
-  <greet-user></greet-user>
+<div class="site-wrap" data-ng-app=myApp >
+  <div data-ng-controller="myCtrl">
+    Name: <input data-ng-model="name">
+  </div>
 </div>
 ```
 
-A component references an object that contains both a template and a controller. 
-
-Note the use of $ctrl for components as opposed to global $scope. Here the data is exclusive to a specific controller. Also, the html uses hyphens while the component uses camel case.
+In myapp.js
 
 ```js
-var myApp = angular.module('myApp', []);
-
-myApp.component('greetUser', {
-    template: 'Hello, {{ $ctrl.user }}!',
-    controller: function GreetUserController() {
-        this.user = 'world';
-    }
+var app = angular.module('myApp', []);
+app.controller('myCtrl', function($scope) {
+  $scope.name = "John Doe";
 });
 ```
-
-Test in browser.
 
 ### Create multiple components:
 
-Add a second component: 
-
-```js
-myApp.component('greetUser', {
-    template: 'Hello, {{ $ctrl.user }}!',
-    controller: function GreetUserController() {
-        this.user = 'world';
-    }
-});
-
-
-myApp.component('byeUser', {
-    template: 'Bye, {{$ctrl.user}}!',
-    controller: function ByeUserController() {
-        this.user = 'cruel world';
-    }
-});
-```
-
-```html
-<body>
-    <div ng-app="myApp">
-        <greet-user></greet-user>
-        <bye-user></bye-user>
-    </div>
-</body>
-```
-
-
 ### Add routing
 
-(Comment out the previous components.) If we want to swap out components we use Angular for routing a SPA, not express routing. 
+`$ npm install angular-route@1.6.2 --save-dev`
 
-Use express routes for handling data and authentication. (Always include a single route for index.html.) 
+Add it to our bundle:
+
+```
+import angular from 'angular'
+import ngRoute from 'angular-route'
+import navjs from './nav'
+```
+
+This supplants express routes for handling views. (Always include a single route for index.html.) 
 
 e.g. something like this would be a bad idea:
 
@@ -164,18 +128,21 @@ app.get('/recipes', (req, res) => {
 })
 ```
 
-Routing in a spa is best done using the hash structure (no page refresh).
-
 Angular routes handle the view (templates) and the logic (controllers) for the views.
 
-`<script src="https://code.angularjs.org/1.6.2/angular-route.js"></script>`
 
 ```js
-var myApp = angular.module('myApp', ['ngRoute']);
+var app = angular.module('myApp', ['ngRoute']);
 ```
 
 ```js
-myApp.config(
+import angular from 'angular'
+import ngRoute from 'angular-route'
+import navjs from './nav'
+
+var app = angular.module('myApp', ['ngRoute']);
+
+app.config(
     function config($routeProvider) {
         $routeProvider.
         when('/', {
@@ -189,18 +156,16 @@ myApp.config(
         otherwise('/404');
     });
 
-myApp.controller('GreetUserController', function($scope){
+app.controller('GreetUserController', function($scope){
     $scope.user = 'world';
 })
 
-myApp.controller('ByeUserController', function($scope){
+app.controller('ByeUserController', function($scope){
     $scope.user = 'cruel world';
 })
 ```
 
-Because we are not using components we are back to using $scope.
-
-ng-view
+ng-view in index.html
 
 ```html
 <div ng-app="myApp">
@@ -212,16 +177,30 @@ Note the url string now includes the hash and a bang ('!').
 
 Go to `http://localhost:3000/#!/bye`
 
-### Add Components
-
-(Comment out the previous controllers. Uncomment the old components.) The routing specifies a template defined by a component.
-
 Hash prefixes and be set using $locationProvider (defaults to !).
 
-```js
-var myApp = angular.module('myApp', ['ngRoute']);
+### Add Components
 
-myApp.config(
+Use named components my moving from `app.controller` to `app.component` and using custom tags:
+
+```
+when('/', {
+    template: 'Hello, {{user}}!',
+    controller: 'GreetUserController'
+}).
+```
+
+to
+
+```
+when('/', {
+    template: '<greet-user></greet-user>'
+}).
+```
+
+
+```js
+app.config(
     function config($locationProvider, $routeProvider) {
         $locationProvider.hashPrefix('!');
         $routeProvider.
@@ -234,14 +213,14 @@ myApp.config(
         otherwise('/404');
     });
 
-myApp.component('greetUser', {
+app.component('greetUser', {
     template: 'Hello, {{$ctrl.user}}!',
     controller: function GreetUserController() {
         this.user = 'world';
     }
 });
 
-myApp.component('byeUser', {
+app.component('byeUser', {
     template: 'Bye, {{$ctrl.user}}!',
     controller: function ByeUserController() {
         this.user = 'cruel world';
@@ -252,7 +231,7 @@ myApp.component('byeUser', {
 ### Linking
 
 ```js
-myApp.component('greetUser', {
+app.component('greetUser', {
     template: `
     <h4>Hello, {{ $ctrl.user }}!</h4>
     <p><a href="#!/bye">Bye</a></p>
@@ -262,49 +241,58 @@ myApp.component('greetUser', {
     }
 });
 ```
-html5 mode is an alternative to hashbang mode. See [this discussion](http://stackoverflow.com/questions/16677528/location-switching-between-html5-and-hashbang-mode-link-rewriting#16678065) on stack overflow.
+
+html5 mode is an alternative to hashbang mode. 
 
 In the config:
 
 Comment out `// $locationProvider.hashPrefix('!')`
 
+Add:
+
 `$locationProvider.html5Mode(true);`
 
-In index.html:
+Add in the head of index.html:
 
 `<base href="/">`
+
+Be sure to change to link in the component:
+
+```
+app.component('greetUser', {
+    template: `
+    <h4>Hello, {{ $ctrl.user }}!</h4>
+    <p><a href="/bye">Bye</a></p>
+    `,
+    controller: function GreetUserController() {
+        this.user = 'world';
+    }
+});
+```
 
 Note the cleaner urls.
 
 
 ## Recipe Site
 
-Examine package.json, app.js, index.html and scripts.js
-
-`sudo npm install`
-
-`npm run boom!`
-
-Allow express to use public as a source for static files and our Angular work:
-
-`app.use(express.static('public'))`
-
-`<script src="https://code.angularjs.org/1.5.8/angular.js"></script>`
+Let's create a component based site with recipes.
 
 `<body ng-app="foodApp">`
 
-Create `foodapp.module.js`
+<!-- Create `foodapp.module.js` -->
 
 `var app = angular.module('foodApp', []);`
 
-and link it: `<script src="js/foodapp.module.js"></script>`
+<!-- and link it: `<script src="js/foodapp.module.js"></script>` -->
 
-Create recipes folder in js.
+<!-- Create recipes folder in js. -->
 
-Create `recipe-list.component.js` and link it.
+<!-- Create `recipe-list.component.js` and link it. -->
 
 ```js
-angular.module('foodApp').component('recipeList', {
+var app = angular.module('foodApp', []);
+
+app.component('recipeList', {
     template: `<h1>test</h1>`,
     controller: function RecipeListController() {
 
@@ -318,18 +306,20 @@ angular.module('foodApp').component('recipeList', {
 </div>
 ```
 
-Debug!
+<!-- Debug! -->
 
 Add a template and data to the controller:
 
 ```js
-angular.module('foodApp').component('recipeList', {
+var app = angular.module('foodApp', []);
+
+app.component('recipeList', {
   template:
   `
   <div>
   <ul>
       <li ng-repeat="recipe in $ctrl.recipes">
-          <img ng-src="img/home/{{ recipe.image }}">
+          <img ng-src="images/home/{{ recipe.image }}">
           <h1><a href="#0">{{ recipe.title }}</a></h1>
           <p>{{ recipe.description }}</p>
       </li>
@@ -374,9 +364,9 @@ angular.module('foodApp').component('recipeList', {
 
 Break down the template into a separate file:
 
-js > recipes > recipe-list.template.html
+public > includes > recipes.html
 
-`templateUrl: 'js/recipes/recipe-list.template.html',`
+`templateUrl: 'includes/recipes.html',`
 
 ### Format the recipes
 
@@ -384,7 +374,7 @@ js > recipes > recipe-list.template.html
 <div class="wrap">
     <ul>
         <li ng-repeat="recipe in $ctrl.recipes">
-            <img ng-src="img/home/{{ recipe.image }}">
+            <img ng-src="images/home/{{ recipe.image }}">
             <div>
             <h1><a href="#0">{{ recipe.title }}</a></h1>
             <p>{{ recipe.description }}</p>
@@ -449,21 +439,15 @@ In the module:
 foodapp.config.js:
 
 ```js
-angular.module('foodApp').config(
-
+app.config(
   function config($locationProvider, $routeProvider) {
     $routeProvider.
     when('/', {
-      template: 'test'
-    }).
-    when('/recipes', {
-      template: 'test2'
-    }).
-    otherwise('/404');
-
+      template: 'recipe-list'
+    })
     $locationProvider.html5Mode(true);
   });
-  ```
+```
 
 ```html
 <div>
@@ -481,21 +465,24 @@ angular.module('foodApp').config(
 ```
 
 ```js
-angular.module('foodApp').config(
-
+app.config(
   function config($locationProvider, $routeProvider) {
     $routeProvider.
     when('/', {
-      template: 'test'
+      template: '' 
     }).
     when('/recipes', {
       template: '<recipe-list></recipe-list>'
-    }).
-    otherwise('/404');
-
+    })
     $locationProvider.html5Mode(true);
   });
+
 ```
+
+
+
+
+
 
 ### Filtering and Sorting (optional)
 
@@ -521,103 +508,6 @@ angular.module('foodApp').config(
 `this.orderProp = 'date';`
 
 
-### Notes
-
-
-```css
-.highlight {
-  transition: all 0.2s;
-  position: absolute;
-  top: 0;
-  background: rgba(255,255,255,0.2);
-  left: 0;
-  z-index: 1;
-  display: block;
-  pointer-events: none 
-  }
-```
-
-```js
-const highlight = document.createElement('span');
-highlight.classList.add('highlight');
-document.body.append(highlight);
-
-function highlightLink() {
-  const linkCoords = this.getBoundingClientRect();
-  const coords = {
-      width: linkCoords.width,
-      height: linkCoords.height,
-      top: linkCoords.top + window.scrollY,
-      left: linkCoords.left + window.scrollX
-    };
-
-    highlight.style.width = `${coords.width}px`;
-    highlight.style.height = `${coords.height}px`;
-    highlight.style.transform = `translate(${coords.left}px, ${coords.top}px)`;
-}
-
-triggers.forEach(panel => panel.addEventListener('mouseenter', highlightLink));
-```
-
-```js
-function highlightLink() {
-  console.log(this)
-}
-```
-
-```js
-function highlightLink() {
-  const linkCoords = this.getBoundingClientRect();
-    console.log(linkCoords)
-}
-```
-
-```js
-function highlightLink() {
-  const linkCoords = this.getBoundingClientRect();
-    highlight.style.width = `${linkCoords.width}px`;
-    highlight.style.height = `${linkCoords.height}px`;
-}
-```
-
-```js
-function highlightLink() {
-  const linkCoords = this.getBoundingClientRect();
-    highlight.style.width = `${linkCoords.width}px`;
-    highlight.style.height = `${linkCoords.height}px`;
-    highlight.style.transform = `translate(100px, 100px)`;
-}
-```
-
-
-
-<nav ng-include=" 'includes/nav.html' "></nav>
-
-
-```
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Recipes</title>
-  <script src="https://code.angularjs.org/1.6.2/angular.min.js"></script>
-  <script src="https://code.angularjs.org/1.6.2/angular-route.js"></script>
-  <script src="js/foodapp.module.js"></script>
-  <script src="js/foodapp.config.js"></script>
-  <script src="js/recipes/recipe-list.component.js"></script>
-
-  <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-
-  <base href="/">
-</head>
-<body ng-app="foodApp">
-  <nav ng-include=" 'includes/nav.html' "></nav>
-  <div ng-view></div>
-  <script src="js/scripts.js"></script>
-</body>
-</html>
-```
 
 
 
@@ -647,26 +537,6 @@ function highlightLink() {
 
 
 
-[Download and install](https://www.mongodb.com/download-center) the community edition of Mongodb. 
-(Install instructions for [MacOS](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/))
-
-Be sure to create a `/data/db/` directory at the top level of your hard drive.
-Run `mongod` in a Terminal tab to start mongod.
-Try running a few commands *in another tab* to ensure its functioning:
-
-```sh
-$ mongo
-> show dbs
-> use puppies
-> db.createCollection('toys')
-> show collections
-> db.toys.insert({name: 'yoyo', color: 'red'})
-> db.toys.find()
-> exit
-```
-Do a clean exit of mongod by closing the terminal tab.
-
-If you need help setting the permissions on the db folder [see this post](http://stackoverflow.com/questions/28987347/setting-read-write-permissions-on-mongodb-folder).
 
 
 ## Angular App continued
@@ -835,9 +705,9 @@ Add a route for the new recipe links:
 
 ```js
 
-			when('/recipes/:recipeId', {
-				template: `<div class="wrap">Detail</div>`
-			}).
+      when('/recipes/:recipeId', {
+        template: `<div class="wrap">Detail</div>`
+      }).
 
 ```
 
@@ -849,23 +719,23 @@ Create a reference to the recipe-detail template:
 
 ```js
 angular.module('foodApp').config(
-	function ($routeProvider, $locationProvider) {
-		$routeProvider.
-			when('/', {
-				template: `<div class="wrap">Test</div>`
-			}).
-			when('/recipes', {
-				template: '<recipe-list></recipe-list>'
-			}).
-			when('/recipes/:recipeId', {
-				template: '<recipe-detail></recipe-detail>'
-			}).
-			when('/reviews', {
-				template: '<review-list></review-list>'
-			}).
-			otherwise('/404');
-		$locationProvider.html5Mode(true)
-	})
+  function ($routeProvider, $locationProvider) {
+    $routeProvider.
+      when('/', {
+        template: `<div class="wrap">Test</div>`
+      }).
+      when('/recipes', {
+        template: '<recipe-list></recipe-list>'
+      }).
+      when('/recipes/:recipeId', {
+        template: '<recipe-detail></recipe-detail>'
+      }).
+      when('/reviews', {
+        template: '<review-list></review-list>'
+      }).
+      otherwise('/404');
+    $locationProvider.html5Mode(true)
+  })
 ```
 
 
@@ -1136,6 +1006,107 @@ If this works then edit the entire navbar:
   </div>
 </nav>
   ```
+
+
+
+
+### Notes
+
+
+```css
+.highlight {
+  transition: all 0.2s;
+  position: absolute;
+  top: 0;
+  background: rgba(255,255,255,0.2);
+  left: 0;
+  z-index: 1;
+  display: block;
+  pointer-events: none 
+  }
+```
+
+```js
+const highlight = document.createElement('span');
+highlight.classList.add('highlight');
+document.body.append(highlight);
+
+function highlightLink() {
+  const linkCoords = this.getBoundingClientRect();
+  const coords = {
+      width: linkCoords.width,
+      height: linkCoords.height,
+      top: linkCoords.top + window.scrollY,
+      left: linkCoords.left + window.scrollX
+    };
+
+    highlight.style.width = `${coords.width}px`;
+    highlight.style.height = `${coords.height}px`;
+    highlight.style.transform = `translate(${coords.left}px, ${coords.top}px)`;
+}
+
+triggers.forEach(panel => panel.addEventListener('mouseenter', highlightLink));
+```
+
+```js
+function highlightLink() {
+  console.log(this)
+}
+```
+
+```js
+function highlightLink() {
+  const linkCoords = this.getBoundingClientRect();
+    console.log(linkCoords)
+}
+```
+
+```js
+function highlightLink() {
+  const linkCoords = this.getBoundingClientRect();
+    highlight.style.width = `${linkCoords.width}px`;
+    highlight.style.height = `${linkCoords.height}px`;
+}
+```
+
+```js
+function highlightLink() {
+  const linkCoords = this.getBoundingClientRect();
+    highlight.style.width = `${linkCoords.width}px`;
+    highlight.style.height = `${linkCoords.height}px`;
+    highlight.style.transform = `translate(100px, 100px)`;
+}
+```
+
+
+
+<nav ng-include=" 'includes/nav.html' "></nav>
+
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recipes</title>
+  <script src="https://code.angularjs.org/1.6.2/angular.min.js"></script>
+  <script src="https://code.angularjs.org/1.6.2/angular-route.js"></script>
+  <script src="js/foodapp.module.js"></script>
+  <script src="js/foodapp.config.js"></script>
+  <script src="js/recipes/recipe-list.component.js"></script>
+
+  <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <base href="/">
+</head>
+<body ng-app="foodApp">
+  <nav ng-include=" 'includes/nav.html' "></nav>
+  <div ng-view></div>
+  <script src="js/scripts.js"></script>
+</body>
+</html>
+```
 
 
 

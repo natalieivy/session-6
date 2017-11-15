@@ -1,0 +1,18 @@
+html {
+  box-sizing: border-box;
+  font-family:'helvetica neue';
+  font-size: 20px;
+  font-weight: 200;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+  linear-gradient(45deg, hsl(207, 50%, 55%) 0%, hsla(340, 100%, 55%, 0) 70%), 
+  linear-gradient(135deg, hsl(227, 55%, 50%) 10%, hsla(225, 95%, 50%, 0) 80%), 
+  linear-gradient(225deg, hsl(176, 60%, 50%) 10%, hsla(140, 90%, 50%, 0) 80%), 
+  linear-gradient(315deg, hsl(307, 55%, 55%) 100%, hsla(35, 95%, 55%, 0) 70%);
+}

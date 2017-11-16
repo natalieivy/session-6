@@ -28,27 +28,17 @@ If you need help setting the permissions on the db folder [see this post](http:/
 
 A [conceptual overview](https://docs.angularjs.org/guide/concepts) of Angular.
 
-<!-- ## Homework
-
-Review the creation of the details page. 
-
-1. Add at least two detail pages to last week's homework
-1. Include an image switcher
-1. Include a filter and view toggle for the master page
-1. Tidy up the view using SASS -->
-
-<!-- # Session 5 -->
-
-<!-- ##Homework
+## Midterm
 
 Review the creation of components below. 
 
-1. Add an Angular route for the reviews section of the page.
-1. Create a component for the review page along with a 
-1. template that displays 4 or 5 one sentence summary reviews (restaurant images are provided in the img directory if you would like to use them)
-1. Bonus - make a nice 404 page for the other items on the main nav
+1. Add an Angular route for the reviews section
+1. Create a component for the review page along with a ...
+1. Template that displays 4 or 5 one sentence summary reviews (restaurant images are provided in the img directory for your use)
 
-Good luck. -->
+This is due in two weeks.
+
+Good luck.
 
 ## Setup
 

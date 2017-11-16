@@ -47,6 +47,8 @@ Good luck. -->
 
 ## Setup
 
+Git - save the current state, create a new branch `components-sample`
+
 Review the manifest. 
 
 cd into the myapp directory and: 
@@ -330,8 +332,6 @@ app.get('*', function(req, res) {
 });
 ```
 
-Git - save the current state, create a new branch
-
 ### Navbar
 
 Using: ng-class
@@ -398,6 +398,8 @@ If this works then edit the entire navbar using this pattern:
   </div>
 </nav>
 ```
+
+Git - save the current state, create a new branch `foodapp`
 
 ### END Components Sample
 

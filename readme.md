@@ -49,7 +49,9 @@ Good luck. -->
 
 Review the manifest. 
 
-cd into the myapp directory and `npm install`
+cd into the myapp directory and: 
+
+`npm install`
 
 `npm run boom!`
 
@@ -94,9 +96,9 @@ Test Angular
 In index.html:
 
 ```html
-<div class="site-wrap" data-ng-app=myApp >
-  <div data-ng-controller="myCtrl">
-    Name: <input data-ng-model="name">
+<div class="wrap" ng-app=myApp >
+  <div ng-controller="myCtrl">
+    Name: <input ng-model="name">
   </div>
 </div>
 ```
@@ -104,10 +106,17 @@ In index.html:
 In myapp.js
 
 ```js
-var app = angular.module('myApp', []);
+const app = angular.module('myApp', []);
+
 app.controller('myCtrl', function($scope) {
   $scope.name = "John Doe";
 });
+```
+
+Refactored:
+
+```js
+app.controller('myCtrl', $scope => $scope.name = "John Doe")
 ```
 
 ### Add routing
@@ -135,7 +144,7 @@ Angular routes handle the view (templates) and the logic (controllers) for the v
 myapp.js:
 
 ```js
-var app = angular.module('myApp', ['ngRoute']);
+const app = angular.module('myApp', ['ngRoute']);
 ```
 
 ```js
@@ -143,7 +152,7 @@ import angular from 'angular'
 import ngRoute from 'angular-route'
 import navjs from './nav'
 
-var app = angular.module('myApp', ['ngRoute']);
+const app = angular.module('myApp', ['ngRoute']);
 
 app.config(
     function config($routeProvider) {
@@ -186,7 +195,7 @@ Hash prefixes and be set using $locationProvider (defaults to !).
 
 Use named components my moving from `app.controller` to `app.component` and using custom tags.
 
-From:
+E.g. from separate templates and controllers:
 
 ```js
 when('/', {
@@ -195,7 +204,7 @@ when('/', {
 }).
 ```
 
-to:
+to custom tags:
 
 ```js
 when('/', {
@@ -234,7 +243,7 @@ app.component('byeUser', {
 });
 ```
 
-Add some formatting
+Add some formatting with template strings :
 
 ```js
 app.component('greetUser', {
@@ -252,7 +261,22 @@ app.component('byeUser', {
 });
 ```
 
+and set the navigation:
+
+```html
+  <nav>
+    <div class="panels">
+      <div class="panel panel1 active">
+        <a href="/">Home</a>
+      </div>
+      <div class="panel panel2">
+        <a href="#!/bye">Recipes</a>
+      </div>
+```
+
 ### Location and Prefixing
+
+Add a link to the `bye` page:
 
 ```js
 app.component('greetUser', {
@@ -298,7 +322,78 @@ app.component('greetUser', {
 
 Note the clean urls.
 
+Correct app.js routes.
+
 Git - save the current state, create a new branch
+
+### Navbar
+
+Using: ng-class
+
+Create a new controller in foodapp.module.js:
+
+```js
+app.controller('NavController', function ($scope, $location) {
+  $scope.isActive = function (viewLocation) {
+    var active = (viewLocation === $location.path());
+    return active;
+  };
+})
+```
+
+Comment out all the panel related js in scripts.js:
+
+```js
+// const panels = document.querySelectorAll('.panel')
+// const triggers = document.querySelectorAll('a')
+
+// function toggleOpen(){
+//  closePanels()
+//  this.classList.toggle('active')
+// }
+
+// function closePanels(){
+//  panels.forEach( (panel) => panel.classList.remove('active'))
+// }
+
+// panels.forEach( panel => panel.addEventListener('click', toggleOpen))
+```
+
+Add controller to the nav:
+
+`<nav ng-controller="NavController">`
+
+Edit one panel
+
+```html
+<div class="panel panel1" ng-class="{ active: isActive('/') }">
+```
+
+If this works then edit the entire navbar using this pattern:
+
+```html
+<nav ng-controller="NavController">
+  <div class="panels">
+    <div class="panel panel1" ng-class="{ active: isActive('/') }">
+      <a href="/">Home</a>
+    </div>
+    <div class="panel panel2" ng-class="{ active: isActive('/bye') }">
+      <a href="/bye">Recipes</a>
+    </div>
+    <div class="panel panel3" ng-class="{ active: isActive('/reviews') }">
+      <a href="/reviews">Reviews</a>
+    </div>
+    <div class="panel panel4" ng-class="{ active: isActive('/delivery') }">
+      <a href="/delivery">Delivery</a>
+    </div>
+    <div class="panel panel5" ng-class="{ active: isActive('/about') }">
+      <a href="/about">About</a>
+    </div>
+  </div>
+</nav>
+```
+
+### END Components Sample
 
 
 ## Recipe Site
@@ -973,7 +1068,23 @@ app.controller('NavController', function ($scope, $location) {
 })
 ```
 
-Comment out all js in scripts.js
+Comment out all the panel related js in scripts.js:
+
+```js
+// const panels = document.querySelectorAll('.panel')
+// const triggers = document.querySelectorAll('a')
+
+// function toggleOpen(){
+//  closePanels()
+//  this.classList.toggle('active')
+// }
+
+// function closePanels(){
+//  panels.forEach( (panel) => panel.classList.remove('active'))
+// }
+
+// panels.forEach( panel => panel.addEventListener('click', toggleOpen))
+```
 
 Add controller to the nav:
 
@@ -985,7 +1096,7 @@ Edit one panel
 <div class="panel panel1" ng-class="{ active: isActive('/') }">
 ```
 
-If this works then edit the entire navbar:
+If this works then edit the entire navbar using this pattern:
 
 ```html
 <nav ng-controller="NavController">

@@ -75,8 +75,12 @@ panels.forEach( (panel) => panel.addEventListener('click', toggleOpen))
 
 ## Angular
 
+Be sure to halt any processes running in the terminal before installing.
+
+```bash
 npm install angular@1.6.2 --save
 npm install angular-route@1.6.2 --save
+```
 
 import it and a new nav.js file into myapp.js
 
@@ -86,6 +90,8 @@ import navjs from './nav'
 ```
 
 Test Angular
+
+In index.html:
 
 ```html
 <div class="site-wrap" data-ng-app=myApp >
@@ -106,9 +112,7 @@ app.controller('myCtrl', function($scope) {
 
 ### Add routing
 
-`$ npm install angular-route@1.6.2 --save-dev`
-
-Add it to our bundle:
+Add routing to our bundle:
 
 ```js
 import angular from 'angular'
@@ -118,7 +122,7 @@ import navjs from './nav'
 
 This supplants express routes for handling views. (Always include a single route for index.html.) 
 
-e.g. we are not doing this:
+e.g. we will not be doing this:
 
 ```js
 app.get('/recipes', (req, res) => {
@@ -199,6 +203,7 @@ when('/', {
 }).
 ```
 
+Edit the Angular routing to use modules:
 
 ```js
 app.config(
@@ -229,14 +234,33 @@ app.component('byeUser', {
 });
 ```
 
+Add some formatting
+
+```js
+app.component('greetUser', {
+    template: `<div class="wrap">Hello, {{$ctrl.user}}!</div>`,
+    controller: function GreetUserController() {
+        this.user = 'world';
+    }
+});
+
+app.component('byeUser', {
+    template: `<div class="wrap">Bye, {{$ctrl.user}}!</div>`,
+    controller: function ByeUserController() {
+        this.user = 'cruel world';
+    }
+});
+```
+
 ### Location and Prefixing
 
 ```js
 app.component('greetUser', {
     template: `
-    <h4>Hello, {{ $ctrl.user }}!</h4>
-    <p><a href="#!/bye">Bye</a></p>
-    `,
+    <div class="wrap">
+      <h4>Hello, {{ $ctrl.user }}!</h4>
+      <p><a href="#!/bye">Bye</a></p>
+    </div>`,
     controller: function GreetUserController() {
         this.user = 'world';
     }
@@ -262,9 +286,10 @@ Be sure to change to link in the component:
 ```js
 app.component('greetUser', {
     template: `
-    <h4>Hello, {{ $ctrl.user }}!</h4>
-    <p><a href="/bye">Bye</a></p>
-    `,
+    <div class="wrap">
+      <h4>Hello, {{ $ctrl.user }}!</h4>
+      <p><a href="/bye">Bye</a></p>
+    </div>`,
     controller: function GreetUserController() {
         this.user = 'world';
     }
@@ -300,14 +325,12 @@ Create the first component:
 var app = angular.module('foodApp', []);
 
 app.component('recipeList', {
-    template: `<h1>test</h1>`,
+    template: `<div class="wrap"><h1>test</h1></div>`,
     controller: function RecipeListController() {
 
     }
 });
 ```
-
-<!-- Debug! -->
 
 Add a template and data to the controller:
 
@@ -317,17 +340,17 @@ var app = angular.module('foodApp', []);
 app.component('recipeList', {
   template:
   `
-<div class="wrap">
+  <div class="wrap">
     <ul>
-        <li ng-repeat="recipe in $ctrl.recipes">
-            <img ng-src="images/home/{{ recipe.image }}">
-            <div>
-            <h1><a href="#0">{{ recipe.title }}</a></h1>
-            <p>{{ recipe.description }}</p>
-            </div>
-        </li>
+      <li ng-repeat="recipe in $ctrl.recipes">
+        <img ng-src="images/home/{{ recipe.image }}">
+        <div>
+          <h1><a href="#0">{{ recipe.title }}</a></h1>
+          <p>{{ recipe.description }}</p>
+        </div>
+      </li>
     </ul>
-</div>
+  </div>
   `,
 
   controller: function RecipeListController( ) {
@@ -365,13 +388,13 @@ app.component('recipeList', {
 });
 ```
 
-Break down the template into a separate file:
+Move the template into a separate file in a new folder:
 
 `public > includes > recipes.html`
 
 Edit the template declaration in myapp.js:
 
-`templateUrl: 'includes/recipes.html',`
+`templateUrl: '/includes/recipes.html',`
 
 ### Format the recipes
 
@@ -415,9 +438,11 @@ recipes.scss
 
 Wire up the main nav. 
 
-In the module:
+Inject ngRoute into the module:
 
 `var app = angular.module('foodApp', ['ngRoute']);`
+
+Our first Angular route:
 
 ```js
 app.config(
@@ -459,7 +484,7 @@ app.config(
   });
 ```
 
-Add additional routes in our config:
+Add an additional route to our config:
 
 ```js
 app.config(
@@ -474,6 +499,8 @@ app.config(
     $locationProvider.html5Mode(true);
   });
 ```
+
+Make a small change to our html:
 
 ```html
 <div class="panel panel1">
@@ -499,7 +526,7 @@ Make $http available to the controller:
 
 `controller: function RecipeListController($http) { ...`
 
-Use `get` method of `$http` to fetch the json from the data folder:
+Use `get` method with `$http` to fetch the json from the data folder:
 
 ```js
 $http.get('data/recipes.json')

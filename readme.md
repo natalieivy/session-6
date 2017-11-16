@@ -322,7 +322,11 @@ app.component('greetUser', {
 
 Note the clean urls.
 
-Correct app.js routes.
+Correct app.js routes by commenting out the generator routes and using:
+
+```js
+
+```
 
 Git - save the current state, create a new branch
 

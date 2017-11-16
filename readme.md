@@ -561,7 +561,9 @@ app.component('recipeList', {
     var self = this;
     $http.get('data/recipes.json')
     .then(function (response) {
-        self.recipes = response.data;
+        self.recipes = response.data;    when('/recipes', {
+      template: '<recipe-list></recipe-list>'
+    })
     });
   }
 });
@@ -671,7 +673,6 @@ See 3-chaining-promises.html
 
 4-multiple-promises.html
 
-
 ### Adding Routing to Display Individual Recipes
 
 Note the addition of recipe1309.json to the data directory. 
@@ -700,13 +701,30 @@ We can configure the $route service (using it's provider) for our application.
 
 In order to be able to quickly locate the configuration code, we put it into a separate file and used the .config suffix.
 
-Add a route for the new recipe links:
+Before we start, let's check that we are not stomping on Expressjs's routes.
+
+Remove the current routes:
+
+```js
+// const routes = require('./routes/index');
+// const users = require('./routes/users');
+```
+
+and add our own:
+
+```js
+app.get('*', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html')
+})
+```
+
+Add a route in myapp.js for the new recipe links:
 
 ```js
 
       when('/recipes/:recipeId', {
         template: `<div class="wrap">Detail</div>`
-      }).
+      })
 
 ```
 
@@ -717,7 +735,7 @@ All variables defined with the : prefix are extracted into the (injectable) $rou
 Create a reference to the recipe-detail template:
 
 ```js
-angular.module('foodApp').config(
+app.config(
   function ($routeProvider, $locationProvider) {
     $routeProvider.
       when('/', {
@@ -728,12 +746,8 @@ angular.module('foodApp').config(
       }).
       when('/recipes/:recipeId', {
         template: '<recipe-detail></recipe-detail>'
-      }).
-      when('/reviews', {
-        template: '<review-list></review-list>'
-      }).
-      otherwise('/404');
-    $locationProvider.html5Mode(true)
+      });
+    // $locationProvider.html5Mode(true)
   })
 ```
 
@@ -742,10 +756,10 @@ angular.module('foodApp').config(
 
 We inject the routeParams service of ngRoute into our controller so that we can extract the recipeId and use it in our stub.
 
-`recipe-detail.component.js`
+<!-- `recipe-detail.component.js` -->
 
 ```js
-angular.module('foodApp').component('recipeDetail', {
+app.component('recipeDetail', {
   template: '<div class="wrap">Detail view for {{$ctrl.recipeId}}</div>',
 
   controller: function RecipeDetailController($routeParams) {
@@ -785,7 +799,7 @@ Review `data/recipe1309.json`:
 }
 ```
 
-<!-- Create `js/recipes/recipe-detail.template.html` -->
+Create `recipe-detail.html`:
 
 ```html
 <div class="wrap" itemscope itemtype="http://schema.org/Recipe">
@@ -808,41 +822,29 @@ Edit `recipe-detail/recipe-detail.component.js` to use templateUrl:
 
 ```js
 angular.module('foodApp').component('recipeDetail', {
-  templateUrl: 'js/recipes/recipe-detail.template.html',
+  templateUrl: '/includes/recipe-detail.html',
   ...
 })
 ```
 
-Add $http to the dependancy list for our controller so we can access the json via http and create a variable `self` to point to the controller. 
+Add `$http` to the dependancy list for our controller so we can access the json via http"
 
-We use the `self` variable in the response function to make the data available to the controller (variable scope).
+`controller: function RecipeDetailController($http, $routeParams) {`
 
-```js
-angular.module('foodApp').component('recipeDetail', {
-  templateUrl: 'js/recipes/recipe-detail.template.html',
+and use an arrow function to load the data: 
 
-  controller: function RecipeDetailController($http, $routeParams) {
-
-    var self = this;
-
-    $http.get('data/' + $routeParams.recipeId +  '.json')
-      .then(function(response){
-      self.recipe = response.data;
-    });
-  }
-});
-```
-
-Refactor to use an arrow function: 
-
-```
+```js 
 $http.get('data/' + $routeParams.recipeId +  '.json')
 .then(response => this.recipe = response.data);
 ```
 
+
+# END
+
+
 ## Adding an Image Swapper
 
-Implement an image switcher using our recipe-details.component.
+Implement an image switcher within our recipe-details component.
 
 Set the html template for the detail view to show one main image using this entry in recipe1309.json: `"mainImageUrl": "lasagna-1.png",`
 
@@ -850,9 +852,9 @@ Add to the template:
 
 `<img ng-src="img/home/{{ $ctrl.recipe.mainImageUrl }}" />` 
 
-But we are creating an image switcher so we will create a new function in the recipe-detail.component:
+We are creating an image switcher so we will create a new function in the recipe-detail component:
 
-```
+```js
 self.setImage = function (imageUrl) {
       self.mainImageUrl = imageUrl;
 };
@@ -901,6 +903,7 @@ angular.module('foodApp').component('recipeDetail', {
 
 });
 ```
+
 
 ### Search / Sort Filter
 

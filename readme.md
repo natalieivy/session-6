@@ -19,6 +19,7 @@ $ mongo
 > db.toys.find()
 > exit
 ```
+
 Do a clean exit of mongod by closing the terminal tab.
 
 If you need help setting the permissions on the db folder [see this post](http://stackoverflow.com/questions/28987347/setting-read-write-permissions-on-mongodb-folder).
@@ -477,6 +478,35 @@ app.config(
     $locationProvider.html5Mode(true);
   });
 
+```
+
+### Navigation 
+
+Remove the hard coded active class on the first nav item in the html and make the application of the active class dependent on the location.
+
+```js
+const panels = document.querySelectorAll('.panel')
+const triggers = document.querySelectorAll('a')
+const loc = window.location.href;
+
+const curLoc = loc.split('#!')[1]
+
+if ( curLoc == '/' ) {
+  panels[0].classList.add('active')
+} else if ( curLoc == '/recipes' ) {
+  panels[1].classList.add('active')
+}
+
+function toggleOpen(){
+  closePanels()
+  this.classList.toggle('active')
+}
+
+function closePanels(){
+  panels.forEach( (panel) => panel.classList.remove('active'))
+}
+
+panels.forEach( (panel) => panel.addEventListener('click', toggleOpen))
 ```
 
 

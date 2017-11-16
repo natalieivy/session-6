@@ -7,14 +7,14 @@
 	<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
 	<link rel="stylesheet" href="/stylesheets/styles.css">
 </head>
-<body  ng-app="myApp">
+<body ng-app="foodApp">
 <nav ng-controller="NavController">
   <div class="panels">
     <div class="panel panel1" ng-class="{ active: isActive('/') }">
       <a href="/">Home</a>
     </div>
-    <div class="panel panel2" ng-class="{ active: isActive('/bye') }">
-      <a href="/bye">Recipes</a>
+    <div class="panel panel2" ng-class="{ active: isActive('/recipes') }">
+      <a href="#!/recipes">Recipes</a>
     </div>
     <div class="panel panel3" ng-class="{ active: isActive('/reviews') }">
       <a href="/reviews">Reviews</a>
@@ -29,7 +29,7 @@
 </nav>
 
 <div>
-    <div ng-view></div>
+  <div ng-view></div>
 </div>
 
 	<script src="/javascripts/bundle.js"></script>

@@ -6,8 +6,9 @@
 (Install instructions for [MacOS](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/))
 
 Be sure to create a `/data/db/` directory at the top level of your hard drive.
-Run `mongod` in a Terminal tab to start mongod.
-Try running a few commands *in another tab* to ensure its functioning:
+Run `mongod` in a Terminal tab to start mongod and note any errors.
+
+Try running a few commands *in another tab* to ensure it's functioning:
 
 ```sh
 $ mongo
@@ -22,6 +23,10 @@ $ mongo
 Do a clean exit of mongod by closing the terminal tab.
 
 If you need help setting the permissions on the db folder [see this post](http://stackoverflow.com/questions/28987347/setting-read-write-permissions-on-mongodb-folder).
+
+## Reading
+
+A [conceptual overview](https://docs.angularjs.org/guide/concepts) of Angular.
 
 <!-- ## Homework
 
@@ -46,6 +51,8 @@ Review the creation of components below.
 Good luck. -->
 
 ## Setup
+
+Git - save the current state, create a new branch `components-sample`
 
 Review the manifest. 
 
@@ -322,9 +329,13 @@ app.component('greetUser', {
 
 Note the clean urls.
 
-Correct app.js routes.
+Correct app.js routes by commenting out the generator routes and using:
 
-Git - save the current state, create a new branch
+```js
+app.get('*', function(req, res) {
+  res.sendFile(__dirname + '/public/index.html')
+});
+```
 
 ### Navbar
 
@@ -393,6 +404,12 @@ If this works then edit the entire navbar using this pattern:
 </nav>
 ```
 
+### Git
+
+Git - save the current state of the `components-sample` branch.
+
+Create a new branch off of it called `foodapp`
+
 ### END Components Sample
 
 
@@ -417,7 +434,7 @@ Remove the Angular material from myapp.js and add:
 Create the first component:
 
 ```js
-var app = angular.module('foodApp', []);
+const app = angular.module('foodApp', []);
 
 app.component('recipeList', {
     template: `<div class="wrap"><h1>test</h1></div>`,
@@ -430,7 +447,7 @@ app.component('recipeList', {
 Add a template and data to the controller:
 
 ```js
-var app = angular.module('foodApp', []);
+const app = angular.module('foodApp', []);
 
 app.component('recipeList', {
   template:
@@ -491,6 +508,8 @@ Edit the template declaration in myapp.js:
 
 `templateUrl: '/includes/recipes.html',`
 
+
+
 ### Format the recipes
 
 ```
@@ -535,7 +554,7 @@ Wire up the main nav.
 
 Inject ngRoute into the module:
 
-`var app = angular.module('foodApp', ['ngRoute']);`
+`const app = angular.module('foodApp', ['ngRoute']);`
 
 Our first Angular route:
 
@@ -598,12 +617,12 @@ app.config(
 Make a small change to our html:
 
 ```html
-<div class="panel panel1">
-    <a href="/">Home</a>
-</div>
-<div class="panel panel2 active">
-    <a href="/recipes">Recipes</a>
-</div>
+    <div class="panel panel1" ng-class="{ active: isActive('/') }">
+      <a href="/">Home</a>
+    </div>
+    <div class="panel panel2" ng-class="{ active: isActive('/recipes') }">
+      <a href="/recipes">Recipes</a>
+    </div>
 ```
 
 
@@ -656,23 +675,23 @@ app.component('recipeList', {
     var self = this;
     $http.get('data/recipes.json')
     .then(function (response) {
-        self.recipes = response.data;    when('/recipes', {
-      template: '<recipe-list></recipe-list>'
+        self.recipes = response.data;    
     })
-    });
   }
-});
+})
 ```
 
-Another solution is to use Arrow functions which avoid the 'this' problem. No need for a self variable. 
+A better solution is to use Arrow functions which avoid the 'this' problem. No need for a self variable. 
 
 See `_arrow-functions`
 
 ```js
 app.component('recipeList', {
-  templateUrl: '/includes/recipes.html',
-  controller: function RecipeListController($http) {
-    $http.get('data/recipes.json').then( response => this.recipes = response.data)
+  templateUrl: '/includes/recipes.html' ,
+
+  controller: function RecipeListController( $http ) {
+    $http.get('data/recipes.json')
+    .then( (response) => this.recipes = response.data)
   }
 })
 ```
@@ -681,9 +700,9 @@ app.component('recipeList', {
 
 * `then` is a promise which runs the following function when the data is received (the `response`)
 
-### Filtering and Sorting (optional)
+### Filtering and Sorting
 
-Add to the template:
+Add to the recipes template:
 
 ```html
 <ul>
@@ -710,6 +729,7 @@ Add to the controller:
 
 `this.orderProp = 'date';`
 
+
 ### Promises
 
 see index.html in the promises folder:
@@ -721,6 +741,7 @@ see index.html in the promises folder:
     console.log(posts)
 </script>
 ```
+
 Fetch returns a promise
 
 ```js
@@ -731,7 +752,7 @@ postsPromise.then(data => {
 })
 ```
 
-data is a readable stream. Since a stream can be any type a data (images, audio, text) we need to convert it.
+`data` is a readable stream. Since a stream can be any type a data (images, audio, text) we need to convert it.
 
 ```js
 const postsPromise = fetch('https://api.punkapi.com/v2/beers/'); 
@@ -741,7 +762,7 @@ postsPromise
   .then(data => { console.log(data) })
 ```
 
-.then fires when there is a successful result. Listen for errors using .catch
+`.then` fires when there is a successful result. Listen for errors using .catch
 
 ```js
 const postsPromise = fetch('https://api.punkapi.com/v2/beers/'); 
@@ -756,17 +777,21 @@ postsPromise
 
 (Create an error by mangling the fetch URI.)
 
+
 ##### Custom Promises
 
 See 2-custom-promise.html
+
 
 ##### Chaining (waterfall) Promises
 
 See 3-chaining-promises.html
 
+
 ##### Multiple Promises
 
 4-multiple-promises.html
+
 
 ### Adding Routing to Display Individual Recipes
 
@@ -777,6 +802,7 @@ Use the json's `recipe.name` expression in the html template:
 `<h1><a href="#!/recipes/{{ recipe.name }} ">{{ recipe.title }}</a></h1>`
 
 Now, clicking on the individual recipe shows a 404 address in the browser's location bar since we do not have routes set up for these yet.
+
 
 ### Recall
 
@@ -798,7 +824,7 @@ In order to be able to quickly locate the configuration code, we put it into a s
 
 Before we start, let's check that we are not stomping on Expressjs's routes.
 
-Remove the current routes:
+Remove the current routes in app.js:
 
 ```js
 // const routes = require('./routes/index');
@@ -816,18 +842,16 @@ app.get('*', (req, res) => {
 Add a route in myapp.js for the new recipe links:
 
 ```js
-
-      when('/recipes/:recipeId', {
-        template: `<div class="wrap">Detail</div>`
-      })
-
+when('/recipes/:recipeId', {
+  template: `<div class="wrap">Detail</div>`
+})
 ```
 
 * `:recipeId` - the $route service uses the route declaration — '/recipes/:recipeId' — as a template that is matched against the current URL. 
 
 All variables defined with the : prefix are extracted into the (injectable) $routeParams object.
 
-Create a reference to the recipe-detail template:
+Create a reference to the `recipe-detail` template:
 
 ```js
 app.config(
@@ -863,16 +887,6 @@ app.component('recipeDetail', {
 
 });
 ```
-
-<!-- Link to recipe-detail files:
-
-```
-<head>
-    ...
-    <script src="/js/recipes/recipe-detail.component.js"></script>
-    ...
-</head>
-``` -->
 
 Clicking on the recipe links in the list view should take you to our stub template. 
 
@@ -963,7 +977,7 @@ And make the following change to the template, adding a class for styling and a 
 
 `<img ng-src="img/home/{{$ctrl.mainImageUrl}}" class="recipe-detail-image" />`
 
-(Note: we no longer need `"mainImageUrl": "img/home/lasagna-1.png",` in the json since we are now refering to the images array.)
+(Note: we no longer need `"mainImageUrl": "images/home/lasagna-1.png",` in the json since we are now refering to the images array.)
 
 ### ng-click
 

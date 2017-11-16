@@ -80,41 +80,85 @@ var _angularRoute2 = _interopRequireDefault(_angularRoute);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var app = _angular2.default.module('myApp', ['ngRoute']);
+var app = _angular2.default.module('foodApp', ['ngRoute']);
 
-app.controller('myCtrl', function ($scope) {
-  return $scope.name = "John Doe";
+app.config(function ($routeProvider, $locationProvider) {
+	$routeProvider.when('/', {
+		template: '<div class="wrap">Test</div>'
+	}).when('/recipes', {
+		template: '<recipe-list></recipe-list>'
+	}).when('/recipes/:recipeId', {
+		template: '<recipe-detail></recipe-detail>'
+	});
+	// $locationProvider.html5Mode(true)
 });
 
-app.config(function config($locationProvider, $routeProvider) {
-  // $locationProvider.hashPrefix('!');
-  $locationProvider.html5Mode(true);
-  $routeProvider.when('/', {
-    template: '<greet-user></greet-user>'
-  }).when('/bye', {
-    template: '<bye-user></bye-user>'
-  }).otherwise('/404');
+app.component('recipeList', {
+	templateUrl: '/includes/recipes.html',
+
+	controller: function RecipeListController($http) {
+		var _this = this;
+
+		this.orderProp = 'date';
+		$http.get('data/recipes.json').then(function (response) {
+			return _this.recipes = response.data;
+		});
+	}
 });
 
-app.component('greetUser', {
-  template: '\n    <div class="wrap">\n      <h4>Hello, {{ $ctrl.user }}!</h4>\n      <p><a href="/bye">Bye</a></p>\n    </div>',
-  controller: function GreetUserController() {
-    this.user = 'world';
-  }
+app.component('recipeDetail', {
+	template: '\n\t<div class="wrap" itemscope itemtype="http://schema.org/Recipe">\n\t<img style="width: 25%; float: left; margin-right: 2rem; margin-bottom: 2rem;" ng-src="images/home/{{ $ctrl.recipe.mainImageUrl }}" />\n\t<h1>{{ $ctrl.recipe.title }}</h1>\n\n\t<p>{{ $ctrl.recipe.description }}</p>\n\n\t<h3 style="clear: both">Ingredients</h3>\n\t<ul class="ingredients">\n\t<li ng-repeat="ingredient in $ctrl.recipe.ingredients">\n\t{{ ingredient }}\n\t</li>\n\t</ul>\n\n\t</div>\n\t',
+
+	controller: function RecipeDetailController($http, $routeParams) {
+		var _this2 = this;
+
+		$http.get('data/' + $routeParams.recipeId + '.json').then(function (response) {
+			return _this2.recipe = response.data;
+		});
+	}
+
 });
 
-app.component('byeUser', {
-  template: '<div class="wrap">Bye, {{$ctrl.user}}!</div>',
-  controller: function ByeUserController() {
-    this.user = 'cruel world';
-  }
-});
+// app.controller('myCtrl', $scope => $scope.name = "John Doe")
+
+
+// app.config(
+// 	function config($locationProvider, $routeProvider) {
+// 		// $locationProvider.hashPrefix('!');
+// 		$locationProvider.html5Mode(true);
+// 		$routeProvider.
+// 		when('/', {
+// 			template: '<greet-user></greet-user>'
+// 		}).
+// 		when('/bye', {
+// 			template: '<bye-user></bye-user>'
+// 		}).
+// 		otherwise('/404');
+// 	});
+
+// app.component('greetUser', {
+//     template: `
+//     <div class="wrap">
+//       <h4>Hello, {{ $ctrl.user }}!</h4>
+//       <p><a href="/bye">Bye</a></p>
+//     </div>`,
+//     controller: function GreetUserController() {
+//         this.user = 'world';
+//     }
+// });
+
+// app.component('byeUser', {
+//     template: `<div class="wrap">Bye, {{$ctrl.user}}!</div>`,
+//     controller: function ByeUserController() {
+//         this.user = 'cruel world';
+//     }
+// });
 
 app.controller('NavController', function ($scope, $location) {
-  $scope.isActive = function (viewLocation) {
-    var active = viewLocation === $location.path();
-    return active;
-  };
+	$scope.isActive = function (viewLocation) {
+		var active = viewLocation === $location.path();
+		return active;
+	};
 });
 
 // const panels = document.querySelectorAll('.panel')

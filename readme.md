@@ -325,7 +325,9 @@ Note the clean urls.
 Correct app.js routes by commenting out the generator routes and using:
 
 ```js
-
+app.get('*', function(req, res) {
+  res.sendFile(__dirname + '/public/index.html')
+});
 ```
 
 Git - save the current state, create a new branch

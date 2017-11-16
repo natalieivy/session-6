@@ -2,7 +2,7 @@
 
 ## Homework
 
-[Download and install](https://www.mongodb.com/download-center) the community edition of Mongodb. 
+[Download and install](https://www.mongodb.com/download-center#community) the community edition of Mongodb. https://www.mongodb.com/download-center#community
 (Install instructions for [MacOS](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/))
 
 Be sure to create a `/data/db/` directory at the top level of your hard drive.

@@ -2,30 +2,36 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<base href="/">
 	<title>Document</title>
 	<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
 	<link rel="stylesheet" href="/stylesheets/styles.css">
 </head>
-<body>
-	<nav>
-		<div class="panels">
-			<div class="panel panel1 active">
-				<a href="#0">Home</a>
-			</div>
-			<div class="panel panel2">
-				<a href="#0">Recipes</a>
-			</div>
-			<div class="panel panel3">
-				<a href="#0">Reviews</a>
-			</div>
-			<div class="panel panel4">
-				<a href="#0">Delivery</a>
-			</div>
-			<div class="panel panel5">
-				<a href="#0">About</a>
-			</div>
-		</div>
-	</nav>
+<body  ng-app="myApp">
+<nav ng-controller="NavController">
+  <div class="panels">
+    <div class="panel panel1" ng-class="{ active: isActive('/') }">
+      <a href="/">Home</a>
+    </div>
+    <div class="panel panel2" ng-class="{ active: isActive('/bye') }">
+      <a href="/bye">Recipes</a>
+    </div>
+    <div class="panel panel3" ng-class="{ active: isActive('/reviews') }">
+      <a href="/reviews">Reviews</a>
+    </div>
+    <div class="panel panel4" ng-class="{ active: isActive('/delivery') }">
+      <a href="/delivery">Delivery</a>
+    </div>
+    <div class="panel panel5" ng-class="{ active: isActive('/about') }">
+      <a href="/about">About</a>
+    </div>
+  </div>
+</nav>
+
+<div>
+    <div ng-view></div>
+</div>
+
 	<script src="/javascripts/bundle.js"></script>
 </body>
 </html>
